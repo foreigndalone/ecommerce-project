@@ -9,6 +9,7 @@ export default function Auth() {
   const onSubmit = () => {
     alert('sign up')
   }
+  
   return (
     <div>
       <form action="" onSubmit={handleSubmit(onSubmit)}>
@@ -28,7 +29,7 @@ export default function Auth() {
       </div>
       <div>
         <label htmlFor="password">Password</label>
-        <input type="text" id='password' placeholder='Password' {...register('password', {required: 'Password is required',
+        <input type="password" id='password' placeholder='Password' {...register('password', {required: 'Password is required',
           minLength: {
             value: 4,
             message: 'Password has to include more then 4 characters'

@@ -1,15 +1,10 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 
 export const fetchProductsThunk = createAsyncThunk('/products/fetch', async()=>{
-    try {
-        const result = await fetch('https://dummyjson.com/products')
-        const data = await result.json()
-        console.log(data, 'DATA WATAFA')
-        console.log(data.products , "DATA + PRODUCTS WATAFA")
-        return data.products
-    } catch (error) {
-        console.error(error)
-    }
+    const result = await fetch('https://dummyjson.com/products');
+    if (!result.ok) throw new Error(`Ошибка: ${result.status}`);
+    const data = await result.json();
+    return data.products;
 })
 
 
@@ -18,6 +13,7 @@ const initialState = {
     products: [],
     favProducts: [],
     hasError: false,
+    errorMessage: null,
     isLoading: false,
 }
 
@@ -37,7 +33,8 @@ const productsSlice = createSlice({
     extraReducers(builder){
         builder
         .addCase(fetchProductsThunk.rejected , (state, action)=>{
-            state.hasError = action.error.message,
+            state.hasError = true,
+            state.errorMessage = action.error.message
             state.isLoading = false
         })
         .addCase(fetchProductsThunk.pending, (state, action)=>{
