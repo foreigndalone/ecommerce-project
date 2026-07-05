@@ -1,7 +1,11 @@
-import React from 'react'
+import ProductList from '../features/products/ProductList.jsx'
 
 export default function Home() {
+
+
   return (
-    <div>Home</div>
+    <div>
+      <ProductList/>
+    </div>
   )
 }
