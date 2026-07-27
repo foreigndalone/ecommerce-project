@@ -9,12 +9,17 @@ function App() {
 
   return (
     <>
-    <Navbar/>
+    <header>
+      <Navbar/>
+    </header>
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/auth' element={<Auth/>}/>
         <Route path='/checkout' element={<CheckOut/>}/>
       </Routes>
+      <footer>
+
+      </footer>
     </>
   )
 }
