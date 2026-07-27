@@ -1,5 +1,1 @@
-.navbar{
-  display: flex;
-
-  justify-content: center;
-}
+@import 'tailwindcss'
