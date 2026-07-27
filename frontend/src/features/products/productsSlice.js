@@ -12,6 +12,8 @@ const initialState = {
     products: [],
     favProducts: [],
     searchQuery: '',
+    selectedCategory: '',
+    selectedBrand: '',
     hasError: false,
     errorMessage: null,
     isLoading: false,
@@ -30,6 +32,12 @@ const productsSlice = createSlice({
         },
         setSearchQuery: (state, action) => {
             state.searchQuery = action.payload
+        },
+        setSelectedCategory: (state, action) => {
+            state.selectedCategory = action.payload
+        },
+        setSelectedBrand: (state, action) => {
+            state.selectedBrand = action.payload
         }
 
     },
@@ -59,12 +67,40 @@ export const selectSearchQuery = createSelector(
     productsState => productsState.searchQuery
 )
 
+export const selectSelectedCategory = createSelector(
+    selectProductsState,
+    productsState => productsState.selectedCategory
+)
+
+export const selectSelectedBrand = createSelector(
+    selectProductsState,
+    productsState => productsState.selectedBrand
+)
+
+export const selectCategories = createSelector(
+    selectProductsState,
+    productsState => [...new Set(productsState.products
+        .map(product => product?.category)
+        .filter(Boolean))]
+        .sort()
+)
+
+export const selectBrands = createSelector(
+    selectProductsState,
+    productsState => [...new Set(productsState.products
+        .map(product => product?.brand)
+        .filter(Boolean))]
+        .sort()
+)
+
 export const selectFilteredProducts = createSelector(
     selectProductsState,
     productsState => {
         const query = productsState.searchQuery.trim().toLowerCase()
+        const selectedCategory = productsState.selectedCategory
+        const selectedBrand = productsState.selectedBrand
 
-        if (!query) {
+        if (!query && !selectedCategory && !selectedBrand) {
             return productsState.products
         }
 
@@ -72,11 +108,30 @@ export const selectFilteredProducts = createSelector(
             const title = product?.title?.toLowerCase() || ''
             const category = product?.category?.toLowerCase() || ''
             const brand = product?.brand?.toLowerCase() || ''
+            
+            const tags = Array.isArray(product?.tags)
+                ? product.tags.join(' ').toLowerCase()
+                : product?.tags?.toLowerCase() || ''
 
-            return title.includes(query) || category.includes(query) || brand.includes(query)
+            const matchesSearch = !query
+                || title.includes(query)
+                || category.includes(query)
+                || brand.includes(query)
+                || tags.includes(query)
+            const matchesCategory = !selectedCategory || product?.category === selectedCategory
+            const matchesBrand = !selectedBrand || product?.brand === selectedBrand
+
+            return matchesSearch && matchesCategory && matchesBrand
         })
     }
 )
 
-export const {addToFav, removeFromFav, setSearchQuery} = productsSlice.actions
+export const {
+    addToFav,
+    removeFromFav,
+    setSearchQuery,
+    setSelectedCategory,
+    setSelectedBrand,
+} = productsSlice.actions
+
 export default productsSlice.reducer

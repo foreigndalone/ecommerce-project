@@ -21,7 +21,7 @@ const ProductItem = (props) => {
           <h3 className="text-base font-semibold text-gray-900 line-clamp-1 group-hover:text-amber-600 transition-colors">
             {title}
           </h3>
-          {/* Рейтинг */}
+          {/* Rating */}
           <div className="flex items-center gap-1 text-xs font-medium text-amber-500 bg-amber-50 px-2 py-0.5 rounded-md shrink-0">
             ⭐ {rating}
           </div>
