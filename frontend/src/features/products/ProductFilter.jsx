@@ -40,6 +40,7 @@ const ProductFilter = () => {
             className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
         />
         <select
+            aria-label="Filter by category"
             value={selectedCategory}
             onChange={handleCategoryChange}
             className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
@@ -52,6 +53,7 @@ const ProductFilter = () => {
             ))}
         </select>
         <select
+            aria-label="Filter by brand"
             value={selectedBrand}
             onChange={handleBrandChange}
             className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
