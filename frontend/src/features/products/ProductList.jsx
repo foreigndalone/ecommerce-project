@@ -12,7 +12,8 @@ const ProductList = () => {
     }, [dispatch])
 
     const products = useSelector(selectFilteredProducts)
-    const error = useSelector(state=>state.productsReducer.hasError)
+    const hasError = useSelector(state=>state.productsReducer.hasError)
+    const errorMessage = useSelector(state=>state.productsReducer.errorMessage)
     const isLoading = useSelector(state=>state.productsReducer.isLoading)
 
     if (isLoading) {
@@ -23,10 +24,10 @@ const ProductList = () => {
     )
   }
 
-    if (error) {
+    if (hasError) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 text-center text-rose-600 font-medium">
-        Failed to fetch: {error}
+        Failed to fetch: {errorMessage}
       </div>
     )
   }
@@ -50,7 +51,7 @@ const ProductList = () => {
           products.map(product => (
             <ProductItem
               key={product.id}
-              {...product} // Передаем все свойства объекта через деструктуризацию
+              product={product}
             />
           ))
         ) : (

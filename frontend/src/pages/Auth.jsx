@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -7,7 +6,7 @@ export default function Auth() {
   const {register, handleSubmit, formState: {errors},} = useForm()
 
   const onSubmit = () => {
-    alert('sign up')
+    alert(mode === 'signup' ? 'sign up' : 'login')
   }
   
   return (
@@ -18,10 +17,11 @@ export default function Auth() {
         <h1>{mode === 'signup' ? 'Sign Up' : 'Login'}</h1>
 
         <label htmlFor="email">Email</label>
-        <input type="text" id='email' placeholder='Email' {...register('email', {required: 'Email is required', 
-          minLength: {
-            value: 6,
-            message: 'Email must have 6 characters'
+        <input type="email" id='email' placeholder='Email' {...register('email', {
+          required: 'Email is required',
+          pattern: {
+            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            message: 'Enter a valid email address'
           }
         })}/>
         {errors.email && <span>{errors.email.message}</span>}

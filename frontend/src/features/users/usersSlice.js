@@ -1,16 +1,8 @@
-import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
-
-const loginThunk = createAsyncThunk('/users/login', async()=>{
-    // const result = await 
-})
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     currentUser: null, //{ id, email, name, role, avatar }
     token: null,
-
-    favorites: [],
-    cart: [],
-    shippingAdress: [],
 
     isLoading: false,
     hasError: false,
@@ -20,10 +12,8 @@ const initialState = {
 const usersSlice = createSlice({
     name: 'users',
     initialState,
-    reducers: {
-        
-    },
-    extraReducers(builder){
-
-    }
+    reducers: {}
 })
+
+
+export default usersSlice.reducer

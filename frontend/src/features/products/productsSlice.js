@@ -1,16 +1,24 @@
 import {createSlice, createAsyncThunk, createSelector} from '@reduxjs/toolkit'
 
-export const fetchProductsThunk = createAsyncThunk('/products/fetch', async()=>{
-    const result = await fetch('https://dummyjson.com/products');
-    if (!result.ok) throw new Error(`Ошибка: ${result.status}`);
-    const data = await result.json();
-    return data.products;
-})
+export const fetchProductsThunk = createAsyncThunk(
+    '/products/fetch',
+    async()=>{
+        const result = await fetch('https://dummyjson.com/products');
+        if (!result.ok) throw new Error(`Ошибка: ${result.status}`);
+        const data = await result.json();
+        return data.products;
+    },
+    {
+        condition: (_, { getState }) => {
+            const productsState = getState().productsReducer
+            return productsState.products.length === 0 && !productsState.isLoading
+        },
+    }
+)
 
 
 const initialState = {
     products: [],
-    favProducts: [],
     searchQuery: '',
     selectedCategory: '',
     selectedBrand: '',
@@ -23,13 +31,6 @@ const productsSlice = createSlice({
     name: 'products',
     initialState,
     reducers: {
-        addToFav: (state, action) => {
-            state.favProducts.push(action.payload)
-        },
-        removeFromFav: (state, action) => {
-            console.log(action.payload)
-            state.favProducts = state.favProducts.filter(fav=> fav.id !== action.payload)
-        },
         setSearchQuery: (state, action) => {
             state.searchQuery = action.payload
         },
@@ -127,8 +128,6 @@ export const selectFilteredProducts = createSelector(
 )
 
 export const {
-    addToFav,
-    removeFromFav,
     setSearchQuery,
     setSelectedCategory,
     setSelectedBrand,
