@@ -17,9 +17,6 @@ function App() {
         <Route path='/auth' element={<Auth/>}/>
         <Route path='/checkout' element={<CheckOut/>}/>
       </Routes>
-      <footer>
-
-      </footer>
     </>
   )
 }

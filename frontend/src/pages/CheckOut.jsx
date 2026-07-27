@@ -1,7 +1,10 @@
-import React from 'react'
+import CartList from '../features/cart/CartList'
 
 export default function CheckOut() {
   return (
-    <div>CheckOut</div>
+    <div>
+      <h1>CheckOut</h1>
+      <CartList/>
+    </div>
   )
 }

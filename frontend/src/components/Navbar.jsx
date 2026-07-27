@@ -1,11 +1,21 @@
-import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
+import CartIcon from '../icons/Cart.png'
+
+import { useDispatch } from 'react-redux'
+import { toggleShowCart } from '../features/cart/cartSlice'
+
 export default function Navbar() {
+    const dispatch = useDispatch()
+
     const linkStyles = "text-gray-600 hover:text-amber-600 transition-colors duration-200 font-medium"
   
     const activeLinkStyles = ({ isActive }) => 
         `${linkStyles} ${isActive ? "text-amber-600 font-semibold" : ""}`
+
+    const handleShowCart = () => {
+        dispatch(toggleShowCart())
+    }
   return (
         <nav className='sticky top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-md px-6 py-4'>
 
@@ -15,15 +25,19 @@ export default function Navbar() {
                         Shop By
                     </Link>
 
-                <div className="flex items-center gap-8">
+                <div className="flex center gap-8">
 
                     <NavLink to="/" className={activeLinkStyles}>
                         Home
                     </NavLink>
 
                     <NavLink to="/checkout" className={activeLinkStyles}>
-                        Cart
+                        Check Out
                     </NavLink>
+
+                    <button onClick={handleShowCart} aria-label="Toggle cart">
+                        <img src={CartIcon} className='w-6 cursor-pointer' alt="" />
+                    </button>
 
                 </div>
 

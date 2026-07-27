@@ -10,7 +10,10 @@ import {
     setSelectedCategory,
 } from './productsSlice'
 
+
+
 const ProductFilter = () => {
+    
     const dispatch = useDispatch()
     const searchQuery = useSelector(selectSearchQuery)
     const selectedCategory = useSelector(selectSelectedCategory)
