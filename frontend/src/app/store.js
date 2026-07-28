@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import productsReducer from '../features/products/productsSlice.js'
 import userReducer from '../features/users/usersSlice.js'
-import cartReducer from '../features/cart/cartSlice.js'
+import cartReducer, { saveCartItems, selectCartItems } from '../features/cart/cartSlice.js'
 
 const store = configureStore({
     reducer: {
@@ -9,6 +9,10 @@ const store = configureStore({
         userReducer,
         cartReducer
     }
+})
+
+store.subscribe(() => {
+    saveCartItems(selectCartItems(store.getState()))
 })
 
 export default store

@@ -20,8 +20,10 @@ const AddToCartBTN = ({ product }) => {
 
   const isOutOfStock = product?.stock <= 0
 
-  const handleClick = () => {
-    if (isAdded || isOutOfStock) return
+  const handleClick = (event) => {
+    event.stopPropagation()
+
+    if (!product?.id || isAdded || isOutOfStock) return
 
     dispatch(addToCart(product))
     setIsAdded(true)

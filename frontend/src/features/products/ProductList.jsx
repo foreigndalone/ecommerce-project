@@ -1,6 +1,12 @@
 import {useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchProductsThunk, selectFilteredProducts } from './productsSlice'
+import {
+  fetchProductsThunk,
+  selectFilteredProducts,
+  selectHasProductsError,
+  selectIsLoadingProducts,
+  selectProductsErrorMessage,
+} from './productsSlice'
 import ProductItem from './ProductItem'
 
 const ProductList = () => {
@@ -12,9 +18,9 @@ const ProductList = () => {
     }, [dispatch])
 
     const products = useSelector(selectFilteredProducts)
-    const hasError = useSelector(state=>state.productsReducer.hasError)
-    const errorMessage = useSelector(state=>state.productsReducer.errorMessage)
-    const isLoading = useSelector(state=>state.productsReducer.isLoading)
+    const hasError = useSelector(selectHasProductsError)
+    const errorMessage = useSelector(selectProductsErrorMessage)
+    const isLoading = useSelector(selectIsLoadingProducts)
 
     if (isLoading) {
     return (
