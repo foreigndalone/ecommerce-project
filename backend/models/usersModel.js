@@ -1,0 +1,48 @@
+import { getDb } from '../config/db.js'
+import {
+    hashPassword,
+    normalizeEmail,
+    toPublicUser,
+    verifyPassword,
+} from '../utils/usersAuth.js'
+
+const COLLECTION_NAME = 'users'
+
+const getCollection = () => getDb().collection(COLLECTION_NAME)
+
+export const ensureUsersEmailIndex = async () => {
+    await getCollection().createIndex(
+        { normalizedEmail: 1 },
+        {
+            unique: true,
+            name: 'users_normalized_email_unique',
+            partialFilterExpression: { normalizedEmail: { $type: 'string' } },
+        }
+    )
+}
+
+export const createUserModel = async (userData) => {
+    const collection = getCollection()
+    const user = {
+        name: userData.name,
+        normalizedEmail: normalizeEmail(userData.email),
+        passwordHash: await hashPassword(userData.password),
+        createdAt: userData.createdAt ?? new Date(),
+        updatedAt: new Date(),
+    }
+    const result = await collection.insertOne(user)
+
+    return toPublicUser({ _id: result.insertedId, ...user })
+}
+
+export const authenticateUserModel = async ({ email, password }) => {
+    const user = await getCollection().findOne({
+        normalizedEmail: normalizeEmail(email),
+    })
+
+    if (!user || !await verifyPassword(password, user.passwordHash)) {
+        return null
+    }
+
+    return toPublicUser(user)
+}

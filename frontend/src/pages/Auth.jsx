@@ -1,13 +1,22 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { sendUserData } from '../features/users/usersSlice.js' // Укажите правильный путь к вашему слейсу
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import {
+  clearAuthError,
+  login,
+  sendUserData,
+} from '../features/users/usersSlice.js'
 
 export default function Auth() {
-  const [mode, setMode] = useState('signup')
-  
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [mode, setMode] = useState(
+    searchParams.get('mode') === 'login' ? 'login' : 'signup'
+  )
   const dispatch = useDispatch()
   const { isLoading, hasError, errorMessage } = useSelector((state) => state.usersReducer)
+
+  const navigate = useNavigate()
 
   const {
     register,
@@ -16,26 +25,32 @@ export default function Auth() {
     reset
   } = useForm()
 
-  const onSubmit = (formData) => {
-    if (mode === 'signup') {
-      // forms User's data
-      const payload = {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        createdAt: new Date().toISOString(), // sends current rime
+  const onSubmit = async (formData) => {
+    try {
+      if (mode === 'signup') {
+        await dispatch(sendUserData({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          createdAt: new Date().toISOString(),
+        })).unwrap()
+      } else {
+        await dispatch(login({
+          email: formData.email,
+          password: formData.password,
+        })).unwrap()
       }
 
-      dispatch(sendUserData(payload))
-    } else {
-      // Logic for Login 
-      console.log('Login attempt:', formData)
+      navigate('/')
+    } catch {
+      // The rejected thunk stores the server message in the users slice.
     }
   }
 
-  // Reset the form while toggling between modes
   const toggleMode = (newMode) => {
     setMode(newMode)
+    setSearchParams(newMode === 'login' ? { mode: 'login' } : {}, { replace: true })
+    dispatch(clearAuthError())
     reset()
   }
 
@@ -92,13 +107,13 @@ export default function Auth() {
               placeholder="Password"
               {...register('password', {
                 required: 'Password is required',
-                minLength: {
-                  value: 4,
-                  message: 'Password has to include more than 4 characters',
-                },
-                maxLength: {
-                  value: 12,
-                  message: 'Password has to include less than 12 characters',
+                  minLength: {
+                    value: 4,
+                    message: 'Password must contain at least 4 characters',
+                  },
+                  maxLength: {
+                    value: 12,
+                    message: 'Password must contain at most 12 characters',
                 },
               })}
             />
@@ -116,16 +131,16 @@ export default function Auth() {
         {mode === 'signup' ? (
           <p>
             Already have an account?{' '}
-            <span style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={() => toggleMode('login')}>
+            <button type="button" onClick={() => toggleMode('login')}>
               Login
-            </span>
+            </button>
           </p>
         ) : (
           <p>
             Don't have an account?{' '}
-            <span style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={() => toggleMode('signup')}>
+            <button type="button" onClick={() => toggleMode('signup')}>
               Sign Up
-            </span>
+            </button>
           </p>
         )}
       </form>
