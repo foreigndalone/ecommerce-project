@@ -4,12 +4,12 @@ import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
 import cartReducer from '../features/cart/cartSlice'
 import productsReducer from '../features/products/productsSlice'
-import userReducer from '../features/users/usersSlice'
+import usersReducer from '../features/users/usersSlice'
 
 export const createTestStore = (preloadedState) => configureStore({
   reducer: {
     productsReducer,
-    userReducer,
+    usersReducer,
     cartReducer,
   },
   preloadedState,
