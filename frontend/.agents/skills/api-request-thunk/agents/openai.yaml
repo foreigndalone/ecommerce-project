@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Async Thunk API request"
+  short_description: "Создание Async Thunk API request по строгому шаблону"
+  default_prompt: "Use $api-request-thunk to create an Async Thunk API request from my requirements."

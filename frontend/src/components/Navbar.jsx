@@ -17,7 +17,7 @@ export default function Navbar() {
         dispatch(toggleShowCart())
     }
   return (
-        <nav className='sticky top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-md px-6 py-4'>
+        <nav className='fixed inset-x-0 top-0 z-50 w-full border-b border-gray-100 bg-white/90 px-6 py-4 shadow-sm backdrop-blur-md'>
 
             <div className='mx-auto flex max-w-7xl items-center justify-between'>
                     <Link to='/'
@@ -25,7 +25,7 @@ export default function Navbar() {
                         Shop By
                     </Link>
 
-                <div className="flex center gap-8">
+                <div className="flex items-center gap-8">
 
                     <NavLink to="/" className={activeLinkStyles}>
                         Home
@@ -35,7 +35,12 @@ export default function Navbar() {
                         Check Out
                     </NavLink>
 
-                    <button onClick={handleShowCart} aria-label="Toggle cart">
+                    <button
+                        type="button"
+                        onClick={handleShowCart}
+                        aria-label="Toggle cart"
+                        className="flex h-9 w-9 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 transition hover:border-amber-500 hover:bg-amber-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                    >
                         <img src={CartIcon} className='w-6 cursor-pointer' alt="" />
                     </button>
 
