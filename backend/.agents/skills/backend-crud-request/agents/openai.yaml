@@ -1,0 +1,4 @@
+interface:
+  display_name: "Backend CRUD Request"
+  short_description: "Generate layered Express and MongoDB CRUD"
+  default_prompt: "Use $backend-crud-request to add a backend CRUD endpoint using the project’s Routes, Controllers, and Models architecture."
