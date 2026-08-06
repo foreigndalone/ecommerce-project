@@ -34,6 +34,11 @@ export default function Auth() {
           password: formData.password,
           createdAt: new Date().toISOString(),
         })).unwrap()
+
+        await dispatch(login({
+          email: formData.email,
+          password: formData.password,
+        })).unwrap()
       } else {
         await dispatch(login({
           email: formData.email,

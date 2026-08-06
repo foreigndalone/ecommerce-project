@@ -144,4 +144,12 @@ const usersSlice = createSlice({
 })
 
 export const { clearAuthError, logout } = usersSlice.actions
+
+const selectUsersState = (state) => state.usersReducer
+
+export const selectCurrentUser = (state) => selectUsersState(state).currentUser
+export const selectIsAuthenticated = (state) => Boolean(
+    selectUsersState(state).currentUser && selectUsersState(state).token
+)
+
 export default usersSlice.reducer
