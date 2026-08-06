@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-const USERS_API_URL = `http://localhost:3000/api/users`
+const USERS_API_ORIGIN = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
+const USERS_API_URL = `${USERS_API_ORIGIN}/api/users/signUp`
+const LOGIN_API_URL = `${USERS_API_ORIGIN}/api/users/login`
 
 export const sendUserData = createAsyncThunk(
     'users/sendUserData',
@@ -32,6 +34,34 @@ export const sendUserData = createAsyncThunk(
 
         if (!response.ok) {
             throw new Error(`Request failed: ${response.status}`)
+        }
+
+        return response.json()
+    }
+)
+
+export const login = createAsyncThunk(
+    'users/signIn',
+    async ({email, password} = {}) => {
+        const trimmedEmail = typeof email === 'string' ? email.trim() : ''
+        
+        if(!trimmedEmail || !password) {
+            throw new Error('Email and password are required')
+        }
+
+        const response = await fetch(LOGIN_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: trimmedEmail,
+                password
+            })
+        })
+
+        if(!response.ok) {
+            throw new Error(`Request failed ${response.status}`)
         }
 
         return response.json()
