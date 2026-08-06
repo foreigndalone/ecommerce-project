@@ -4,13 +4,18 @@ import CartIcon from '../icons/Cart.png'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { toggleShowCart } from '../features/cart/cartSlice'
-import { logout } from '../features/users/usersSlice.js'
+import {
+    logout,
+    selectCurrentUser,
+    selectIsAuthenticated,
+} from '../features/users/usersSlice.js'
 
 export default function Navbar() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const { currentUser, token } = useSelector((state) => state.usersReducer)
-    const isAuthenticated = Boolean(currentUser && token)
+    const currentUser = useSelector(selectCurrentUser)
+    const isAuthenticated = useSelector(selectIsAuthenticated)
+    const userPoints = currentUser?.points ?? currentUser?.balance ?? 0
 
     const linkStyles = "text-gray-600 hover:text-amber-600 transition-colors duration-200 font-medium"
   
@@ -58,18 +63,21 @@ export default function Navbar() {
                 <div className='flex items-center gap-4'>
 
                     {isAuthenticated ? (
-                        <>
-                            <span className="text-sm font-medium text-gray-600">
+                        <div className="flex items-center overflow-hidden rounded-full border border-amber-200 bg-amber-50 shadow-sm">
+                            <span className="px-4 py-2 text-sm font-semibold text-gray-800">
                                 {currentUser.name}
+                            </span>
+                            <span className="border-l border-amber-200 px-4 py-2 text-sm font-medium text-amber-700">
+                                {userPoints} pts
                             </span>
                             <button
                                 type="button"
                                 onClick={handleLogout}
-                                className="rounded-full bg-amber-600 px-5 py-2 text-sm font-medium text-white shadow-sm hover:bg-amber-500 transition-all active:scale-95"
+                                className="self-stretch border-l border-amber-700 bg-amber-600 px-5 text-sm font-medium text-white transition-colors hover:bg-amber-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-800"
                             >
                                 Log Out
                             </button>
-                        </>
+                        </div>
                     ) : (
                         <>
                             <Link to='/auth'

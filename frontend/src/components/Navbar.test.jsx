@@ -11,7 +11,12 @@ describe('Navbar authentication controls', () => {
     const { store } = renderWithProviders(<Navbar />, {
       preloadedState: {
         usersReducer: {
-          currentUser: { id: 'user-id', name: 'Test User', email: 'test@example.com' },
+          currentUser: {
+            id: 'user-id',
+            name: 'Test User',
+            email: 'test@example.com',
+            points: 150,
+          },
           token: 'signed-token',
           isLoading: false,
           hasError: false,
@@ -21,10 +26,21 @@ describe('Navbar authentication controls', () => {
     })
 
     expect(screen.getByText('Test User')).toBeInTheDocument()
+    expect(screen.getByText('150 pts')).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Sign Up' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Login' })).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Log Out' }))
 
     expect(store.getState().usersReducer.currentUser).toBeNull()
     expect(store.getState().usersReducer.token).toBeNull()
     expect(screen.getByRole('link', { name: 'Login' })).toBeInTheDocument()
+  })
+
+  it('keeps Sign Up and Login links for unauthenticated users', () => {
+    renderWithProviders(<Navbar />)
+
+    expect(screen.getByRole('link', { name: 'Sign Up' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Login' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Log Out' })).not.toBeInTheDocument()
   })
 })
