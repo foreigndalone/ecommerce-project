@@ -3,6 +3,7 @@ import { render } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
 import cartReducer from '../features/cart/cartSlice'
+import favoritesReducer from '../features/favorites/favoritesSlice'
 import productsReducer from '../features/products/productsSlice'
 import usersReducer from '../features/users/usersSlice'
 
@@ -11,6 +12,7 @@ export const createTestStore = (preloadedState) => configureStore({
     productsReducer,
     usersReducer,
     cartReducer,
+    favoritesReducer,
   },
   preloadedState,
 })

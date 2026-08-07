@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import LikeBTN from '../../components/LikeBTN'
 import AddToCartBTN from '../cart/AddToCartBTN'
 
 const ProductItem = ({product}) => {
@@ -39,9 +40,13 @@ const ProductItem = ({product}) => {
         </div>
       </Link>
 
+      <div className="absolute right-7 top-7 z-10">
+        <LikeBTN product={product} />
+      </div>
+
       <div className="mt-4 flex items-center justify-between gap-2 pt-3 border-t border-gray-50">
         <span className="text-lg font-black text-gray-900">${price}</span>
-        <span className={`text-[11px] font-bold px-2 py-1 rounded-full ${
+        <span className={`shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-[11px] font-bold ${
           stock > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
         }`}>
           {stock > 0 ? `Stock: ${stock}` : 'Out of stock'}
