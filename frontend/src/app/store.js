@@ -1,7 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import productsReducer from '../features/products/productsSlice.js'
-import usersReducer from '../features/users/usersSlice.js'
-import cartReducer, { saveCartItems, selectCartItems } from '../features/cart/cartSlice.js'
+import usersReducer, { selectCurrentUser } from '../features/users/usersSlice.js'
+import cartReducer, {
+    getCartStorageKey,
+    loadCartItems,
+    replaceCart,
+    saveCartItems,
+    selectCartItems,
+} from '../features/cart/cartSlice.js'
 
 const store = configureStore({
     reducer: {
@@ -11,8 +17,20 @@ const store = configureStore({
     }
 })
 
+let activeCartKey = getCartStorageKey(selectCurrentUser(store.getState()))
+
 store.subscribe(() => {
-    saveCartItems(selectCartItems(store.getState()))
+    const state = store.getState()
+    const currentUser = selectCurrentUser(state)
+    const nextCartKey = getCartStorageKey(currentUser)
+
+    if (nextCartKey !== activeCartKey) {
+        activeCartKey = nextCartKey
+        store.dispatch(replaceCart(loadCartItems(currentUser)))
+        return
+    }
+
+    saveCartItems(currentUser, selectCartItems(state))
 })
 
 export default store
