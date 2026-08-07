@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import productsReducer from '../features/products/productsSlice.js'
 import usersReducer, { selectCurrentUser } from '../features/users/usersSlice.js'
+import favoritesReducer from '../features/favorites/favoritesSlice.js'
 import cartReducer, {
     getCartStorageKey,
     loadCartItems,
@@ -13,7 +14,8 @@ const store = configureStore({
     reducer: {
         productsReducer,
         usersReducer,
-        cartReducer
+        cartReducer,
+        favoritesReducer
     }
 })
 
