@@ -1,21 +1,38 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 
-const CART_STORAGE_KEY = 'ecommerce.cart.items'
+const GUEST_CART_STORAGE_KEY = 'ecommerce.cart.guest'
+const LEGACY_CART_STORAGE_KEY = 'ecommerce.cart.items'
 
-const loadCartItems = () => {
+export const getCartStorageKey = (currentUser) =>
+    currentUser?.id
+        ? `ecommerce.cart.user.${currentUser.id}`
+        : GUEST_CART_STORAGE_KEY
+
+export const loadCartItems = (currentUser) => {
     if (typeof window === 'undefined') return []
 
     try {
-        const savedCart = window.localStorage.getItem(CART_STORAGE_KEY)
+        const savedCart = window.localStorage.getItem(getCartStorageKey(currentUser))
+            ?? (!currentUser?.id
+                ? window.localStorage.getItem(LEGACY_CART_STORAGE_KEY)
+                : null)
         return savedCart ? JSON.parse(savedCart) : []
     } catch {
         return []
     }
 }
 
-export const saveCartItems = (items) => {
+export const saveCartItems = (currentUser, items) => {
     if (typeof window === 'undefined') return
-    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items))
+
+    try {
+        window.localStorage.setItem(
+            getCartStorageKey(currentUser),
+            JSON.stringify(items)
+        )
+    } catch {
+        // Ignore unavailable or full localStorage and keep the Redux cart working.
+    }
 }
 
 const initialState = {
@@ -56,6 +73,9 @@ const cartSlice = createSlice({
         closeCart: (state) => {
             state.showCart = false
         },
+        replaceCart: (state, action) => {
+            state.items = Array.isArray(action.payload) ? action.payload : []
+        },
     },
 })
 
@@ -92,5 +112,5 @@ export const selectCartItemCount = createSelector(
     items => items.reduce((total, item) => total + item.quantity, 0)
 )
 
-export const {addToCart, removeFromCart, toggleShowCart, closeCart} = cartSlice.actions
+export const {addToCart, removeFromCart, toggleShowCart, closeCart, replaceCart} = cartSlice.actions
 export default cartSlice.reducer

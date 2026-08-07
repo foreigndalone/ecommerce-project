@@ -11,6 +11,8 @@ import {
 } from '../features/users/usersSlice.js'
 
 export default function Navbar() {
+
+
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const currentUser = useSelector(selectCurrentUser)
@@ -80,7 +82,7 @@ export default function Navbar() {
                         </div>
                     ) : (
                         <>
-                            <Link to='/auth'
+                            <Link to='/auth?mode=signup'
                                 className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
                                 Sign Up
                             </Link>
