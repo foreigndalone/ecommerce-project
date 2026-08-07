@@ -1,4 +1,5 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Coins, LogOut, UserRound } from 'lucide-react'
 
 import CartIcon from '../icons/Cart.png'
 
@@ -65,19 +66,35 @@ export default function Navbar() {
                 <div className='flex items-center gap-4'>
 
                     {isAuthenticated ? (
-                        <div className="flex items-center overflow-hidden rounded-full border border-amber-200 bg-amber-50 shadow-sm">
-                            <span className="px-4 py-2 text-sm font-semibold text-gray-800">
-                                {currentUser.name}
-                            </span>
-                            <span className="border-l border-amber-200 px-4 py-2 text-sm font-medium text-amber-700">
-                                {userPoints} pts
-                            </span>
+                        <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1 rounded-2xl border border-gray-100/80 bg-white/85 p-1.5 shadow-[0_8px_24px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+                                <button
+                                    type="button"
+                                    aria-label="User account"
+                                    className="flex h-10 min-w-0 items-center gap-2 rounded-xl bg-gray-100/90 px-3 text-gray-700 transition-colors hover:bg-gray-200/80 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                                >
+                                    <UserRound className="h-4 w-4 shrink-0 text-gray-500" aria-hidden="true" />
+                                    <span className="max-w-28 truncate text-sm font-semibold sm:max-w-36">
+                                        {currentUser.name}
+                                    </span>
+                                </button>
+
+                                <div className="flex h-10 shrink-0 items-center gap-1.5 rounded-xl border border-amber-100/80 bg-amber-50/80 px-3 text-amber-600">
+                                    <Coins className="h-4 w-4" aria-hidden="true" />
+                                    <span className="whitespace-nowrap text-sm font-bold">
+                                        {userPoints} pts
+                                    </span>
+                                </div>
+                            </div>
+
                             <button
                                 type="button"
                                 onClick={handleLogout}
-                                className="self-stretch border-l border-amber-700 bg-amber-600 px-5 text-sm font-medium text-white transition-colors hover:bg-amber-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-800"
+                                aria-label="Log Out"
+                                title="Log Out"
+                                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-white/70 text-gray-500 shadow-sm backdrop-blur-md transition-all hover:border-amber-200 hover:bg-amber-50 hover:text-amber-600 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                             >
-                                Log Out
+                                <LogOut className="h-4 w-4" aria-hidden="true" />
                             </button>
                         </div>
                     ) : (
