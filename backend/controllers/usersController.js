@@ -1,4 +1,8 @@
-import { authenticateUserModel, createUserModel } from '../models/usersModel.js'
+import {
+    authenticateUserModel,
+    createUserModel,
+    findUserByIdModel,
+} from '../models/usersModel.js'
 import { createJwtToken, normalizeEmail } from '../utils/usersAuth.js'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -34,6 +38,7 @@ const getLoginData = (data = {}) => {
 export const createUsersController = ({
     createUser = createUserModel,
     authenticateUser = authenticateUserModel,
+    findUserById = findUserByIdModel,
     createToken = createJwtToken,
 } = {}) => {
     const registerUser = async (req, res) => {
@@ -87,7 +92,22 @@ export const createUsersController = ({
         }
     }
 
-    return { loginUser, registerUser }
+    const getCurrentUser = async (req, res) => {
+        try {
+            const user = await findUserById(req.user.sub)
+
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' })
+            }
+
+            return res.status(200).json(user)
+        } catch (error) {
+            console.error('Get current user error:', error)
+            return res.status(500).json({ message: 'Failed to get user' })
+        }
+    }
+
+    return { getCurrentUser, loginUser, registerUser }
 }
 
-export const { loginUser, registerUser } = createUsersController()
+export const { getCurrentUser, loginUser, registerUser } = createUsersController()
