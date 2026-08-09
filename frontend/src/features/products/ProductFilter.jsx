@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Search } from 'lucide-react'
 import {
     selectBrands,
     selectCategories,
@@ -11,13 +11,8 @@ import {
     setSelectedCategory,
 } from './productsSlice'
 
-const controlClassName =
-    'h-12 w-full rounded-xl border border-gray-100 bg-white px-4 text-sm font-medium text-gray-900 shadow-sm outline-none transition duration-200 placeholder:text-gray-400 hover:border-amber-50/60 hover:bg-amber-600 hover:font-bold focus:border-amber-500 focus:ring-2 focus:ring-amber-100'
-
-const selectClassName = `${controlClassName} cursor-pointer appearance-none pr-11`
-
 const SelectArrow = () => (
-    <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-amber-600">
+    <span className="finder-icon">
         <ChevronDown className="h-4 w-4" aria-hidden="true" />
     </span>
 )
@@ -44,21 +39,19 @@ const ProductFilter = () => {
     }
 
     return (
-    <div className="mx-auto grid max-w-7xl gap-3 px-4 pt-8 sm:grid-cols-3 sm:px-6 lg:px-8">
-        <input
-            value={searchQuery}
-            onChange={handleSearchChange}
-            type="search"
-            aria-label="Search products"
-            placeholder="Search products"
-            className={controlClassName}
-        />
-        <div className="relative">
+    <section className="finder-wrap" aria-label="Find products">
+      <div className="shop-shell finder">
+        <label className="finder-field">
+            <span className="finder-label">Search by name</span>
+            <input value={searchQuery} onChange={handleSearchChange} type="search" placeholder="What are you looking for?" className="finder-control" />
+            <Search className="finder-icon h-5 w-5" aria-hidden="true" />
+        </label>
+        <label className="finder-field">
+            <span className="finder-label">Shop by category</span>
             <select
-                aria-label="Filter by category"
                 value={selectedCategory}
                 onChange={handleCategoryChange}
-                className={selectClassName}
+                className="finder-control cursor-pointer appearance-none"
             >
                 <option value="">All categories</option>
                 {categories.map(category => (
@@ -68,13 +61,13 @@ const ProductFilter = () => {
                 ))}
             </select>
             <SelectArrow />
-        </div>
-        <div className="relative">
+        </label>
+        <label className="finder-field">
+            <span className="finder-label">Shop by brand</span>
             <select
-                aria-label="Filter by brand"
                 value={selectedBrand}
                 onChange={handleBrandChange}
-                className={selectClassName}
+                className="finder-control cursor-pointer appearance-none"
             >
                 <option value="">All brands</option>
                 {brands.map(brand => (
@@ -84,8 +77,9 @@ const ProductFilter = () => {
                 ))}
             </select>
             <SelectArrow />
-        </div>
-    </div>
+        </label>
+      </div>
+    </section>
   )
 }
 

@@ -156,6 +156,65 @@ test('loginUser returns the public user and JWT on success', async () => {
     })
 })
 
+test('getCurrentUser returns the authenticated public user', async () => {
+    const publicUser = {
+        id: 'user-id',
+        name: 'Test User',
+        email: 'test@example.com',
+    }
+    let receivedUserId
+    const controller = createUsersController({
+        findUserById: async (userId) => {
+            receivedUserId = userId
+            return publicUser
+        },
+    })
+    const response = createResponse()
+
+    await controller.getCurrentUser({
+        user: { sub: 'authenticated-user-id' },
+        body: { userId: 'body-user-id' },
+        params: { id: 'params-user-id' },
+        query: { userId: 'query-user-id' },
+    }, response)
+
+    assert.equal(receivedUserId, 'authenticated-user-id')
+    assert.equal(response.statusCode, 200)
+    assert.deepEqual(response.body, publicUser)
+})
+
+test('getCurrentUser returns 404 when the authenticated user does not exist', async () => {
+    const controller = createUsersController({
+        findUserById: async () => null,
+    })
+    const response = createResponse()
+
+    await controller.getCurrentUser({ user: { sub: 'deleted-user-id' } }, response)
+
+    assert.equal(response.statusCode, 404)
+    assert.deepEqual(response.body, { message: 'User not found' })
+})
+
+test('getCurrentUser returns 500 without exposing model errors', async () => {
+    const controller = createUsersController({
+        findUserById: async () => {
+            throw new Error('private database error')
+        },
+    })
+    const response = createResponse()
+    const originalConsoleError = console.error
+    console.error = () => {}
+
+    try {
+        await controller.getCurrentUser({ user: { sub: 'user-id' } }, response)
+    } finally {
+        console.error = originalConsoleError
+    }
+
+    assert.equal(response.statusCode, 500)
+    assert.deepEqual(response.body, { message: 'Failed to get user' })
+})
+
 test('normalizeEmail trims and lowercases email', () => {
     assert.equal(normalizeEmail('  User@Example.COM '), 'user@example.com')
 })

@@ -24,35 +24,29 @@ const ProductList = () => {
 
     if (isLoading) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 text-center text-gray-500">
-        Loading the products...
-      </div>
+      <section className="shop-shell catalog" aria-busy="true" aria-label="Loading products">
+        <p className="sr-only" role="status">Loading products</p>
+        <div className="skeleton-grid">{Array.from({ length: 8 }, (_, index) => <div className="skeleton" key={index} />)}</div>
+      </section>
     )
   }
 
     if (hasError) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 text-center text-rose-600 font-medium">
-        Failed to fetch: {errorMessage}
+      <div className="shop-shell state-panel" role="alert">
+        <strong>We couldn’t load the shop.</strong><br />Check your connection and refresh the page. {errorMessage}
       </div>
     )
   }
 
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      {/* Заголовок секции */}
-      <div className="mb-8 border-b border-gray-100 pb-4">
-        <h2 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl">
-          Our products
-        </h2>
-        <p className="mt-2 text-sm text-gray-500">
-          Choose the best for YourSelf; Choose what you want!
-        </p>
+    <section className="shop-shell catalog" id="catalog">
+      <div className="catalog-head">
+        <div><p className="section-kicker">Ready to browse</p><h2 className="catalog-title">The shop floor</h2></div>
+        <p className="result-count" aria-live="polite">{products?.length ?? 0} products shown</p>
       </div>
-
-      
-      <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+      <div className="product-grid">
         {products && products.length > 0 ? (
           products.map(product => (
             <ProductItem
@@ -61,7 +55,7 @@ const ProductList = () => {
             />
           ))
         ) : (
-          <p className="text-gray-500 col-span-full text-center">Products are not found</p>
+          <div className="state-panel"><strong>No matches yet.</strong><br />Try a broader search or choose “All” in the filters.</div>
         )}
       </div>
     </section>

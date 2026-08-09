@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb'
+
 import { getDb } from '../config/db.js'
 import {
     hashPassword,
@@ -45,4 +47,14 @@ export const authenticateUserModel = async ({ email, password }) => {
     }
 
     return toPublicUser(user)
+}
+
+export const findUserByIdModel = async (userId) => {
+    if (!ObjectId.isValid(userId)) return null
+
+    const user = await getCollection().findOne({
+        _id: new ObjectId(userId),
+    })
+
+    return user ? toPublicUser(user) : null
 }
