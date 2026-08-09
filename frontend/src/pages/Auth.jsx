@@ -57,26 +57,18 @@ export default function Auth() {
   }
 
   return (
-    <div className="min-h-[calc(100svh-73px)] bg-gray-50 px-4 py-10 sm:px-6 lg:flex lg:items-center lg:py-14">
-      <section className="mx-auto grid w-full max-w-5xl overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="relative hidden overflow-hidden bg-amber-500 p-10 text-white lg:flex lg:flex-col lg:justify-between">
-          <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10" />
-          <div className="absolute -bottom-24 -left-16 h-72 w-72 rounded-full border-[40px] border-white/10" />
-
-          <div className="relative">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+    <div className="auth-page">
+      <section className="auth-shell">
+        <div className="auth-story">
+          <div>
+            <div className="auth-mark">
               <ShoppingBag className="h-6 w-6" aria-hidden="true" />
             </div>
-            <p className="mt-6 text-sm font-bold uppercase tracking-[0.18em] text-amber-100">
-              Shop By
-            </p>
-            <h2 className="mt-3 max-w-sm text-4xl font-black leading-tight tracking-tight text-white">
-              Everything you love, all in one place.
-            </h2>
+            <p className="auth-story-label">ShopBy member counter</p>
+            <h2 className="auth-story-title">Your shop,<br /><span>ready when you are.</span></h2>
           </div>
-
-          <div className="relative rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur-sm">
-            <p className="text-sm leading-relaxed text-amber-50">
+          <div className="auth-story-note">
+            <p>
               {mode === 'signup'
                 ? 'Create an account to enjoy a faster checkout and keep your shopping experience personal.'
                 : 'Welcome back. Sign in to continue shopping and access your account.'}
@@ -84,34 +76,34 @@ export default function Auth() {
           </div>
         </div>
 
-        <div className="p-6 sm:p-10 lg:p-12">
-          <div className="mb-8">
-            <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-600 lg:hidden">
+        <div className="auth-form-panel">
+          <div className="auth-heading">
+            <div className="auth-mobile-mark">
               <ShoppingBag className="h-5 w-5" aria-hidden="true" />
             </div>
-            <p className="text-sm font-semibold text-amber-600">
+            <p className="section-kicker">
               {mode === 'signup' ? 'Join Shop By' : 'Welcome back'}
             </p>
-            <h1 className="m-0 mt-2 text-3xl font-black tracking-tight text-gray-900 sm:text-4xl">
+            <h1 className="auth-title">
               {mode === 'signup' ? 'Sign Up' : 'Login'}
             </h1>
-            <p className="mt-3 text-sm text-gray-500">
+            <p className="auth-intro">
               {mode === 'signup'
                 ? 'Enter your details below to get started.'
                 : 'Enter your details to continue shopping.'}
             </p>
           </div>
 
-          <form className="space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <form className="auth-form" onSubmit={handleSubmit(onSubmit)} noValidate>
             {mode === 'signup' && (
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-gray-700" htmlFor="name">
+              <div className="form-field">
+                <label className="form-label" htmlFor="name">
                   Name
                 </label>
                 <div className="relative">
-                  <User className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" aria-hidden="true" />
+                  <User className="form-icon" aria-hidden="true" />
                   <input
-                    className={`h-12 w-full rounded-xl border bg-gray-50 pl-12 pr-4 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:bg-white focus:ring-2 ${errors.name ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100' : 'border-gray-100 focus:border-amber-500 focus:ring-amber-100'}`}
+                    className={`form-input ${errors.name ? 'is-invalid' : ''}`}
                     type="text"
                     id="name"
                     placeholder="Your name"
@@ -125,18 +117,18 @@ export default function Auth() {
                     })}
                   />
                 </div>
-                {errors.name && <p className="mt-1.5 text-xs font-medium text-rose-600">{errors.name.message}</p>}
+                {errors.name && <p className="form-error" role="alert">{errors.name.message}</p>}
               </div>
             )}
 
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-gray-700" htmlFor="email">
+            <div className="form-field">
+              <label className="form-label" htmlFor="email">
                 Email
               </label>
               <div className="relative">
-                <Mail className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" aria-hidden="true" />
+                <Mail className="form-icon" aria-hidden="true" />
                 <input
-                  className={`h-12 w-full rounded-xl border bg-gray-50 pl-12 pr-4 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:bg-white focus:ring-2 ${errors.email ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100' : 'border-gray-100 focus:border-amber-500 focus:ring-amber-100'}`}
+                  className={`form-input ${errors.email ? 'is-invalid' : ''}`}
                   type="email"
                   id="email"
                   placeholder="you@example.com"
@@ -150,17 +142,17 @@ export default function Auth() {
                   })}
                 />
               </div>
-              {errors.email && <p className="mt-1.5 text-xs font-medium text-rose-600">{errors.email.message}</p>}
+              {errors.email && <p className="form-error" role="alert">{errors.email.message}</p>}
             </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-gray-700" htmlFor="password">
+            <div className="form-field">
+              <label className="form-label" htmlFor="password">
                 Password
               </label>
               <div className="relative">
-                <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" aria-hidden="true" />
+                <LockKeyhole className="form-icon" aria-hidden="true" />
                 <input
-                  className={`h-12 w-full rounded-xl border bg-gray-50 pl-12 pr-4 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:bg-white focus:ring-2 ${errors.password ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100' : 'border-gray-100 focus:border-amber-500 focus:ring-amber-100'}`}
+                  className={`form-input ${errors.password ? 'is-invalid' : ''}`}
                   type="password"
                   id="password"
                   placeholder="4–12 characters"
@@ -178,17 +170,17 @@ export default function Auth() {
                   })}
                 />
               </div>
-              {errors.password && <p className="mt-1.5 text-xs font-medium text-rose-600">{errors.password.message}</p>}
+              {errors.password && <p className="form-error" role="alert">{errors.password.message}</p>}
             </div>
 
             {hasError && (
-              <div className="rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700" role="alert">
+              <div className="form-server-error" role="alert">
                 {errorMessage}
               </div>
             )}
 
             <button
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-6 text-sm font-bold text-white shadow-sm transition-all hover:bg-amber-600 hover:shadow active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-amber-300"
+              className="primary-button auth-submit"
               type="submit"
               disabled={isLoading}
             >
@@ -196,10 +188,10 @@ export default function Auth() {
               {!isLoading && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
             </button>
 
-            <p className="text-center text-sm text-gray-500">
+            <p className="auth-switch">
               {mode === 'signup' ? 'Already have an account?' : "Don't have an account?"}{' '}
               <button
-                className="font-bold text-amber-600 transition-colors hover:text-amber-700 focus:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-amber-500"
+                className="text-button"
                 type="button"
                 onClick={() => toggleMode(mode === 'signup' ? 'login' : 'signup')}
               >

@@ -19,24 +19,39 @@ export default function CheckOut() {
   }
 
   return (
-    <div>
-      <h1>CheckOut</h1>
-      <CartList/>
-      <h2 >
-        Total Price: ${finalPrice.toFixed(2)}
-      </h2>
-
-     <button
+    <div className="checkout-page">
+      <div className="shop-shell">
+        <header className="checkout-heading">
+          <p className="section-kicker">Final review</p>
+          <h1 className="checkout-title">Checkout</h1>
+          <p className="checkout-intro">Review your items before placing the order.</p>
+        </header>
+        <div className="checkout-grid">
+          <section className="checkout-items" aria-labelledby="order-items-title">
+            <div className="checkout-section-head">
+              <h2 id="order-items-title">Your items</h2>
+              <span>{cart.length} {cart.length === 1 ? 'line' : 'lines'}</span>
+            </div>
+            <CartList/>
+          </section>
+          <aside className="order-summary" aria-labelledby="order-summary-title">
+            <p className="section-kicker">Order summary</p>
+            <h2 id="order-summary-title" className="summary-title">Ready to place</h2>
+            <div className="summary-row"><span>Items</span><span>{cart.length}</span></div>
+            <div className="summary-total">
+              <span>Total Price: ${finalPrice.toFixed(2)}</span>
+            </div>
+            <p className="summary-note">Taxes and delivery are calculated when the order is processed.</p>
+            <button
           onClick={handlePlaceOrder}
           disabled={cart.length === 0}
-          className={`flex h-12 items-center justify-center gap-2 rounded-xl px-8 text-sm font-bold transition-all duration-300 ${
-            cart.length === 0
-              ? 'cursor-not-allowed bg-gray-100 text-gray-400'
-              : 'bg-amber-500 text-white shadow-sm hover:bg-amber-600 hover:shadow active:scale-95 active:bg-amber-700'
-          }`}
+          className="primary-button checkout-button"
         >
           <span>{cart.length === 0 ? 'Fill the cart' : 'Place Order'}</span>
         </button>
+          </aside>
+        </div>
+      </div>
     </div>
   )
 }
