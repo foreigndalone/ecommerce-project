@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Redux State"
+  short_description: "Создание Redux Toolkit slice по строгому шаблону"
+  default_prompt: "Use $create-redux-state to create a Redux Toolkit state slice from my requirements."

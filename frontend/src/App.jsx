@@ -49,7 +49,7 @@ function App() {
     <header>
       <Navbar/>
     </header>
-    <main className="pt-[73px]">
+    <main className="app-main">
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/auth' element={<Auth/>}/>

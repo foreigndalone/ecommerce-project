@@ -3,18 +3,20 @@ import LikeBTN from '../../components/LikeBTN'
 import AddToCartBTN from '../cart/AddToCartBTN'
 
 const ProductItem = ({product}) => {
-    const {title, images, description, price, rating, stock} = product
+    const {title, images, description, price, rating, stock, category} = product
     const image = images?.[0]
 
   return (
-    <article className='group relative flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md'>
-      <Link to={`/product/${product.id}`} className="flex flex-grow flex-col outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2">
-        <div className='aspect-square w-full overflow-hidden rounded-xl bg-gray-50 flex items-center justify-center'>
+    <article className="product-card">
+      <div className="favorite-slot"><LikeBTN product={product} /></div>
+      <Link to={`/product/${product.id}`} className="product-link">
+        <div className="product-media">
+          <span className="product-rank">#{String(product.id).padStart(2, '0')}</span>
           {image ? (
             <img
               src={image}
               alt={title}
-              className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+              className="h-full w-full object-cover object-center"
               loading="lazy"
             />
           ) : (
@@ -24,33 +26,14 @@ const ProductItem = ({product}) => {
           )}
         </div>
 
-        <div className='mt-4 flex flex-col flex-grow'>
-          <div className='flex items-start justify-between gap-2'>
-            <h3 className="text-base font-semibold text-gray-900 line-clamp-1 group-hover:text-amber-600 transition-colors">
-              {title}
-            </h3>
-            <div className="flex items-center gap-1 text-xs font-medium text-amber-500 bg-amber-50 px-2 py-0.5 rounded-md shrink-0">
-              Rating: {rating}
-            </div>
-          </div>
-
-          <p className="mt-1 text-xs text-gray-500 line-clamp-2 flex-grow">
-            {description}
-          </p>
+        <div className="product-body">
+          <div className="product-meta"><span>{category?.replaceAll('-', ' ')}</span><span>★ {rating}</span></div>
+          <h3 className="product-title">{title}</h3>
+          <p className="product-description">{description}</p>
         </div>
       </Link>
-
-      <div className="absolute right-7 top-7 z-10">
-        <LikeBTN product={product} />
-      </div>
-
-      <div className="mt-4 flex items-center justify-between gap-2 pt-3 border-t border-gray-50">
-        <span className="text-lg font-black text-gray-900">${price}</span>
-        <span className={`shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-[11px] font-bold ${
-          stock > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
-        }`}>
-          {stock > 0 ? `Stock: ${stock}` : 'Out of stock'}
-        </span>
+      <div className="product-buy">
+        <div><span className="product-price">${price}</span><br /><span className={`stock ${stock > 0 ? '' : 'out'}`}>{stock > 0 ? `${stock} in stock` : 'Out of stock'}</span></div>
         <AddToCartBTN product={product}/>
       </div>
     </article>

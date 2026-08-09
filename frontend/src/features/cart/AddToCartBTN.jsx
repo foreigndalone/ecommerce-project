@@ -116,20 +116,15 @@ const AddToCartBTN = ({ product }) => {
       ref={buttonRef}
       onClick={handleClick}
       disabled={isOutOfStock}
-      className={`relative flex h-9 items-center justify-center overflow-hidden rounded-xl px-4 text-xs font-semibold transition-colors duration-300 ${
-        isAdded
-          ? 'bg-emerald-500 text-white'
-          : isOutOfStock
-          ? 'cursor-not-allowed bg-gray-100 text-gray-400'
-          : 'bg-amber-500 text-white hover:bg-amber-600 active:bg-amber-700 shadow-sm hover:shadow'
-      }`}
+      aria-label={isOutOfStock ? `${product.title} is out of stock` : `Add ${product.title} to cart`}
+      className={`add-button ${isAdded ? 'added' : ''}`}
     >
       <div
         ref={defaultContentRef}
         className={`flex items-center gap-1.5 ${isAdded ? 'pointer-events-none' : ''}`}
       >
         <ShoppingBag className="h-4 w-4" />
-        <span className='text-[11px] font-black'>{isOutOfStock ? 'Out of stock' : 'Add'}</span>
+        <span>{isOutOfStock ? 'Sold out' : 'Add'}</span>
       </div>
 
       <div
