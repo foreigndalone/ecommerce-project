@@ -14,6 +14,7 @@ import {
   selectCurrentUser,
   selectSessionStatus,
 } from './features/users/usersSlice'
+import UserAccount from './pages/UserAccount'
 
 function App() {
   const dispatch = useDispatch()
@@ -55,6 +56,7 @@ function App() {
         <Route path='/auth' element={<Auth/>}/>
         <Route path='/checkout' element={<CheckOut/>}/>
         <Route path='/product/:id' element={<Product/>} />
+        <Route path='/account' element={<UserAccount/>} />
       </Routes>
     </main>
       <CartSidebar />

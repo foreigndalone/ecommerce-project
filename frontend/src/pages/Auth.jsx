@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowRight, LockKeyhole, Mail, ShoppingBag, User } from 'lucide-react'
 import {
   clearAuthError,
@@ -15,6 +15,7 @@ export default function Auth() {
   const { isLoading, hasError, errorMessage } = useSelector((state) => state.usersReducer)
 
   const navigate = useNavigate()
+  const location = useLocation()
 
   const {
     register,
@@ -44,7 +45,7 @@ export default function Auth() {
         })).unwrap()
       }
 
-      navigate('/')
+      navigate(location.state?.from || '/', { replace: true })
     } catch {
       // The rejected thunk stores the server message in the users slice.
     }

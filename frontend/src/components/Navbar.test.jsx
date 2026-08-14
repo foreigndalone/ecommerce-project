@@ -6,6 +6,36 @@ import Navbar from './Navbar.jsx'
 import { renderWithProviders } from '../test/renderWithProviders.jsx'
 
 describe('Navbar authentication controls', () => {
+  it('opens a favorites window and removes a saved product', async () => {
+    const user = userEvent.setup()
+    const favorite = {
+      id: 7,
+      title: 'Saved headphones',
+      price: 89,
+      images: ['https://example.com/headphones.jpg'],
+    }
+
+    const { store } = renderWithProviders(<Navbar />, {
+      preloadedState: {
+        favoritesReducer: {
+          items: [favorite],
+          status: 'idle',
+          error: null,
+        },
+      },
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Favorites, 1 items' }))
+
+    expect(screen.getByRole('heading', { name: 'Favorites' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Saved headphones/ })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Remove Saved headphones from favorites' }))
+
+    expect(store.getState().favoritesReducer.items).toHaveLength(0)
+    expect(screen.getByText('No favorites yet')).toBeInTheDocument()
+  })
+
   it('logs out and clears the in-memory authentication state', async () => {
     const user = userEvent.setup()
     const { store } = renderWithProviders(<Navbar />, {
