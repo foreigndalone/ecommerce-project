@@ -215,6 +215,122 @@ test('getCurrentUser returns 500 without exposing model errors', async () => {
     assert.deepEqual(response.body, { message: 'Failed to get user' })
 })
 
+test('updateCurrentUser allowlists and normalizes profile fields', async () => {
+    let receivedUserId
+    let receivedUserData
+    const publicUser = {
+        id: 'user-id',
+        name: 'Updated User',
+        email: 'updated@example.com',
+    }
+    const controller = createUsersController({
+        updateUser: async (userId, userData) => {
+            receivedUserId = userId
+            receivedUserData = userData
+            return publicUser
+        },
+    })
+    const response = createResponse()
+
+    await controller.updateCurrentUser({
+        user: { sub: 'authenticated-user-id' },
+        body: {
+            name: ' Updated User ',
+            email: ' UPDATED@EXAMPLE.COM ',
+            role: 'admin',
+            passwordHash: 'not-allowed',
+        },
+    }, response)
+
+    assert.equal(receivedUserId, 'authenticated-user-id')
+    assert.deepEqual(receivedUserData, {
+        name: 'Updated User',
+        email: 'updated@example.com',
+    })
+    assert.equal(response.statusCode, 200)
+    assert.deepEqual(response.body, publicUser)
+})
+
+test('updateCurrentUser rejects an empty or invalid update', async () => {
+    const controller = createUsersController({
+        updateUser: async () => {
+            throw new Error('model should not be called')
+        },
+    })
+    const response = createResponse()
+
+    await controller.updateCurrentUser({
+        user: { sub: 'user-id' },
+        body: { email: 'invalid-email', role: 'admin' },
+    }, response)
+
+    assert.equal(response.statusCode, 400)
+    assert.deepEqual(response.body, { message: 'Provide a valid name or email' })
+})
+
+test('updateCurrentUser returns 404 when the authenticated user does not exist', async () => {
+    const controller = createUsersController({ updateUser: async () => null })
+    const response = createResponse()
+
+    await controller.updateCurrentUser({
+        user: { sub: 'deleted-user-id' },
+        body: { name: 'Updated User' },
+    }, response)
+
+    assert.equal(response.statusCode, 404)
+    assert.deepEqual(response.body, { message: 'User not found' })
+})
+
+test('updateCurrentUser returns 409 for a duplicate normalized email', async () => {
+    const controller = createUsersController({
+        updateUser: async () => {
+            const error = new Error('duplicate key')
+            error.code = 11000
+            throw error
+        },
+    })
+    const response = createResponse()
+    const originalConsoleError = console.error
+    console.error = () => {}
+
+    try {
+        await controller.updateCurrentUser({
+            user: { sub: 'user-id' },
+            body: { email: 'taken@example.com' },
+        }, response)
+    } finally {
+        console.error = originalConsoleError
+    }
+
+    assert.equal(response.statusCode, 409)
+    assert.deepEqual(response.body, {
+        message: 'A user with this email already exists',
+    })
+})
+
+test('updateCurrentUser returns 500 without exposing model errors', async () => {
+    const controller = createUsersController({
+        updateUser: async () => {
+            throw new Error('private database error')
+        },
+    })
+    const response = createResponse()
+    const originalConsoleError = console.error
+    console.error = () => {}
+
+    try {
+        await controller.updateCurrentUser({
+            user: { sub: 'user-id' },
+            body: { name: 'Updated User' },
+        }, response)
+    } finally {
+        console.error = originalConsoleError
+    }
+
+    assert.equal(response.statusCode, 500)
+    assert.deepEqual(response.body, { message: 'Failed to update user' })
+})
+
 test('normalizeEmail trims and lowercases email', () => {
     assert.equal(normalizeEmail('  User@Example.COM '), 'user@example.com')
 })

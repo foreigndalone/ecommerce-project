@@ -155,6 +155,36 @@ export const fetchCurrentUser = createAsyncThunk(
     }
 )
 
+export const updateCurrentUser = createAsyncThunk(
+    'users/updateCurrentUser',
+    async ({ name, email } = {}, { getState, rejectWithValue }) => {
+        const token = getState().usersReducer.token
+
+        if (!token) {
+            return rejectWithValue('Authentication token is missing')
+        }
+
+        try {
+            const response = await fetch(CURRENT_USER_API_URL, {
+                method: 'PATCH',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email }),
+            })
+
+            if (!response.ok) {
+                return rejectWithValue(await getErrorMessage(response, 'Failed to update user'))
+            }
+
+            return response.json()
+        } catch (error) {
+            return rejectWithValue(error.message || 'Failed to update user')
+        }
+    }
+)
+
 const storedToken = loadAuthToken()
 
 const initialState = {
@@ -164,7 +194,9 @@ const initialState = {
 
     isLoading: false,
     hasError: false,
-    errorMessage: null
+    errorMessage: null,
+    profileUpdateStatus: 'idle',
+    profileUpdateError: null,
 }
 
 const usersSlice = createSlice({
@@ -177,6 +209,8 @@ const usersSlice = createSlice({
             state.sessionStatus = 'unauthenticated'
             state.hasError = false
             state.errorMessage = null
+            state.profileUpdateStatus = 'idle'
+            state.profileUpdateError = null
         },
         clearAuthError: (state) => {
             state.hasError = false
@@ -247,6 +281,21 @@ const usersSlice = createSlice({
                     || action.error.message
                     || 'Failed to restore authentication'
             })
+            .addCase(updateCurrentUser.pending, (state) => {
+                state.profileUpdateStatus = 'loading'
+                state.profileUpdateError = null
+            })
+            .addCase(updateCurrentUser.fulfilled, (state, action) => {
+                state.currentUser = action.payload
+                state.profileUpdateStatus = 'succeeded'
+                state.profileUpdateError = null
+            })
+            .addCase(updateCurrentUser.rejected, (state, action) => {
+                state.profileUpdateStatus = 'failed'
+                state.profileUpdateError = action.payload
+                    || action.error.message
+                    || 'Failed to update user'
+            })
     },
 })
 
@@ -286,6 +335,10 @@ const selectUsersState = (state) => state.usersReducer
 export const selectCurrentUser = (state) => selectUsersState(state).currentUser
 export const selectAuthToken = (state) => selectUsersState(state).token
 export const selectSessionStatus = (state) => selectUsersState(state).sessionStatus
+export const selectProfileUpdateStatus = (state) =>
+    selectUsersState(state).profileUpdateStatus ?? 'idle'
+export const selectProfileUpdateError = (state) =>
+    selectUsersState(state).profileUpdateError
 export const selectIsSessionLoading = (state) =>
     selectSessionStatus(state) === 'loading'
 export const selectIsAuthenticated = (state) => Boolean(

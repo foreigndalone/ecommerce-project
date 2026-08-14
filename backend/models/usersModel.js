@@ -58,3 +58,25 @@ export const findUserByIdModel = async (userId) => {
 
     return user ? toPublicUser(user) : null
 }
+
+export const updateUserModel = async (userId, userData) => {
+    if (!ObjectId.isValid(userId)) return null
+
+    const updates = { updatedAt: new Date() }
+
+    if (userData.name !== undefined) {
+        updates.name = userData.name
+    }
+
+    if (userData.email !== undefined) {
+        updates.normalizedEmail = normalizeEmail(userData.email)
+    }
+
+    const user = await getCollection().findOneAndUpdate(
+        { _id: new ObjectId(userId) },
+        { $set: updates },
+        { returnDocument: 'after' }
+    )
+
+    return user ? toPublicUser(user) : null
+}
