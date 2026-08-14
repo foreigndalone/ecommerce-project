@@ -2,6 +2,7 @@ import {
     authenticateUserModel,
     createUserModel,
     findUserByIdModel,
+    updateUserModel,
 } from '../models/usersModel.js'
 import { createJwtToken, normalizeEmail } from '../utils/usersAuth.js'
 
@@ -35,10 +36,31 @@ const getLoginData = (data = {}) => {
     return { email, password }
 }
 
+const getUserUpdates = (data = {}) => {
+    const updates = {}
+
+    if (data.name !== undefined) {
+        const name = typeof data.name === 'string' ? data.name.trim() : ''
+
+        if (!name || name.length > 80) return null
+        updates.name = name
+    }
+
+    if (data.email !== undefined) {
+        const email = typeof data.email === 'string' ? normalizeEmail(data.email) : ''
+
+        if (!EMAIL_PATTERN.test(email)) return null
+        updates.email = email
+    }
+
+    return Object.keys(updates).length ? updates : null
+}
+
 export const createUsersController = ({
     createUser = createUserModel,
     authenticateUser = authenticateUserModel,
     findUserById = findUserByIdModel,
+    updateUser = updateUserModel,
     createToken = createJwtToken,
 } = {}) => {
     const registerUser = async (req, res) => {
@@ -107,7 +129,42 @@ export const createUsersController = ({
         }
     }
 
-    return { getCurrentUser, loginUser, registerUser }
+    const updateCurrentUser = async (req, res) => {
+        const userData = getUserUpdates(req.body)
+
+        if (!userData) {
+            return res.status(400).json({
+                message: 'Provide a valid name or email',
+            })
+        }
+
+        try {
+            const user = await updateUser(req.user.sub, userData)
+
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' })
+            }
+
+            return res.status(200).json(user)
+        } catch (error) {
+            console.error('Update current user error:', error)
+
+            if (error?.code === 11000) {
+                return res.status(409).json({
+                    message: 'A user with this email already exists',
+                })
+            }
+
+            return res.status(500).json({ message: 'Failed to update user' })
+        }
+    }
+
+    return { getCurrentUser, loginUser, registerUser, updateCurrentUser }
 }
 
-export const { getCurrentUser, loginUser, registerUser } = createUsersController()
+export const {
+    getCurrentUser,
+    loginUser,
+    registerUser,
+    updateCurrentUser,
+} = createUsersController()
