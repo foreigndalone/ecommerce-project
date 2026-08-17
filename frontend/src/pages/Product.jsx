@@ -15,7 +15,7 @@ import {
 const Product = () => {
     const { id } = useParams()
     const dispatch = useDispatch()
-    const productId = Number(id)
+    const productId = id?.trim()
 
     const product = useSelector(state => selectProductById(state, productId))
     const isLoading = useSelector(state => selectIsProductLoadingById(state, productId))
@@ -29,12 +29,12 @@ const Product = () => {
     const selectedProductImage = images[selectedImage]
 
     useEffect(() => {
-        if (!Number.isNaN(productId)) {
+        if (productId) {
             dispatch(fetchProductByIdThunk(productId))
         }
     }, [dispatch, productId])
 
-    if (Number.isNaN(productId)) {
+    if (!productId) {
         return (
         <div className="mx-auto flex min-h-[60vh] max-w-7xl flex-col items-center justify-center px-4 text-center sm:px-6 lg:px-8">
             <h2 className="text-2xl font-black tracking-tight text-gray-900">Invalid product link</h2>

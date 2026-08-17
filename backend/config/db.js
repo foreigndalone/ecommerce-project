@@ -30,3 +30,8 @@ export const getDb = () => {
     }
     return dbInstance
 }
+
+export const closeDB = async () => {
+    await client.close()
+    dbInstance = null
+}

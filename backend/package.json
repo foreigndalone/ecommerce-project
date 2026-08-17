@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "migrate:products": "node scripts/migrateProducts.js",
     "test": "node --test"
   },
   "keywords": [],

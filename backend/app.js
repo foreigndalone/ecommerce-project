@@ -3,7 +3,9 @@ import cors from 'cors'
 
 import { connectDB } from './config/db.js'
 
+import productsRouter from './routes/productsRouter.js'
 import usersRouter from './routes/usersRouter.js'
+import { ensureProductsIndexes } from './models/productsModel.js'
 import { ensureUsersEmailIndex } from './models/usersModel.js'
 
 const app = express()
@@ -14,6 +16,7 @@ app.use(express.json())
 
 app.use(cors({ origin: FRONTEND_ORIGIN }))
 
+app.use('/api/products', productsRouter)
 app.use('/api/users', usersRouter)
 
 const startServer = async () => {
@@ -22,6 +25,7 @@ const startServer = async () => {
     }
 
     await connectDB()
+    await ensureProductsIndexes()
     await ensureUsersEmailIndex()
 
     app.listen(PORT, () => {
