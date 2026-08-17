@@ -1,16 +1,23 @@
 import { Heart } from 'lucide-react'
+import type { MouseEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import type { AppDispatch, RootState } from '../app/store'
 import {
     selectIsFavorite,
     toggleFavorite,
 } from '../features/favorites/favoritesSlice'
+import type { Product } from '../types/products'
 
-export default function LikeBTN({ product }) {
-    const dispatch = useDispatch()
-    const isFavorite = useSelector((state) => selectIsFavorite(state, product))
+interface LikeBTNProps {
+    product: Product
+}
 
-    const handleToggleFavorite = (event) => {
+export default function LikeBTN({ product }: LikeBTNProps) {
+    const dispatch = useDispatch<AppDispatch>()
+    const isFavorite = useSelector((state: RootState) => selectIsFavorite(state, product))
+
+    const handleToggleFavorite = (event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault()
         event.stopPropagation()
         dispatch(toggleFavorite(product))

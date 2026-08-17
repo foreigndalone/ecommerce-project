@@ -1,10 +1,14 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit'
+
 import productsReducer from '../features/products/productsSlice'
+
 import usersReducer, {
     createAuthListenerMiddleware,
     selectCurrentUser,
 } from '../features/users/usersSlice.js'
+
 import favoritesReducer from '../features/favorites/favoritesSlice'
+
 import cartReducer, {
     getCartStorageKey,
     loadCartItems,
@@ -20,11 +24,14 @@ const store = configureStore({
         productsReducer,
         usersReducer,
         cartReducer,
-        favoritesReducer
+        favoritesReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().prepend(authListenerMiddleware.middleware),
 })
+
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
 
 let activeCartKey = getCartStorageKey(selectCurrentUser(store.getState()))
 

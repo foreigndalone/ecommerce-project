@@ -2,20 +2,21 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Heart, LogOut, ShoppingBag, UserRound, X } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
+import type { AppDispatch, RootState } from '../app/store'
 import { selectCartItemCount, toggleShowCart } from '../features/cart/cartSlice'
 import FavoritesList from '../features/favorites/FavoritesList.jsx'
 import { selectFavoritesCount } from '../features/favorites/favoritesSlice'
 import { logout, selectCurrentUser, selectIsAuthenticated } from '../features/users/usersSlice.js'
 
 export default function Navbar() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-  const favoritesMenuRef = useRef(null)
+  const favoritesMenuRef = useRef<HTMLDivElement | null>(null)
   const [showFavorites, setShowFavorites] = useState(false)
-  const currentUser = useSelector(selectCurrentUser)
-  const isAuthenticated = useSelector(selectIsAuthenticated)
-  const cartCount = useSelector(selectCartItemCount)
-  const favoritesCount = useSelector(selectFavoritesCount)
+  const currentUser = useSelector((state: RootState) => selectCurrentUser(state))
+  const isAuthenticated = useSelector((state: RootState) => selectIsAuthenticated(state))
+  const cartCount = useSelector((state: RootState) => selectCartItemCount(state))
+  const favoritesCount = useSelector((state: RootState) => selectFavoritesCount(state))
   const userPoints = currentUser?.points ?? currentUser?.balance ?? 0
 
   const handleLogout = () => {
@@ -26,8 +27,12 @@ export default function Navbar() {
   useEffect(() => {
     if (!showFavorites) return
 
-    const closeMenu = (event) => {
-      if (event.key === 'Escape' || !favoritesMenuRef.current?.contains(event.target)) {
+    const closeMenu = (event: KeyboardEvent | PointerEvent) => {
+      const isEscape = event instanceof KeyboardEvent && event.key === 'Escape'
+      const clickedOutside = event.target instanceof Node
+        && !favoritesMenuRef.current?.contains(event.target)
+
+      if (isEscape || clickedOutside) {
         setShowFavorites(false)
       }
     }

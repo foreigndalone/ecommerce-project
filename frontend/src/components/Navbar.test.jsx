@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 
-import Navbar from './Navbar.jsx'
+import Navbar from './Navbar'
 import { renderWithProviders } from '../test/renderWithProviders.jsx'
 
 describe('Navbar authentication controls', () => {
