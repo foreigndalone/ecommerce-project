@@ -16,7 +16,7 @@ describe('Product page', () => {
       <Routes>
         <Route path="/product/:id" element={<Product />} />
       </Routes>,
-      { route: '/product/1' }
+      { route: '/product/64f000000000000000000001' }
     )
 
     expect(screen.getByText('Loading the product...')).toBeInTheDocument()

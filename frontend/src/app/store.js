@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import productsReducer from '../features/products/productsSlice.js'
+import productsReducer from '../features/products/productsSlice'
 import usersReducer, {
     createAuthListenerMiddleware,
     selectCurrentUser,
