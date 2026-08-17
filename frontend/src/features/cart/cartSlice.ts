@@ -1,30 +1,52 @@
-import { createSelector, createSlice } from "@reduxjs/toolkit";
+// path: src/features/cart/cartSlice.ts
+import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-// import type { Product } from '../products'
+import type { Product } from '../../types/products'
 
-// export interface CartItem {
-//   productId: string
-//   quantity: number
-// }
+export interface CartItem {
+    productId: string
+    quantity: number
+}
 
-// export interface CartState {
-//   showCart: boolean
-//   items: CartItem[]
-// }
+export interface CartState {
+    showCart: boolean
+    items: CartItem[]
+}
 
-// export interface CartItemWithProduct extends CartItem {
-//   product: Product
-// }
+export interface CartItemWithProduct extends CartItem {
+    product: Product
+}
+
+interface CurrentUserForCart {
+    id?: string | number
+}
+
+interface CartRootState {
+    cartReducer: CartState
+    productsReducer: {
+        entities: Record<string, Product | undefined>
+    }
+}
 
 const GUEST_CART_STORAGE_KEY = 'ecommerce.cart.guest'
 const LEGACY_CART_STORAGE_KEY = 'ecommerce.cart.items'
 
-export const getCartStorageKey = (currentUser) =>
+export const getCartStorageKey = (currentUser?: CurrentUserForCart | null) =>
     currentUser?.id
         ? `ecommerce.cart.user.${currentUser.id}`
         : GUEST_CART_STORAGE_KEY
 
-export const loadCartItems = (currentUser) => {
+const isCartItem = (item: unknown): item is CartItem => {
+    if (!item || typeof item !== 'object') return false
+
+    const cartItem = item as CartItem
+
+    return typeof cartItem.productId === 'string'
+        && Number.isInteger(cartItem.quantity)
+        && cartItem.quantity > 0
+}
+
+export const loadCartItems = (currentUser?: CurrentUserForCart | null): CartItem[] => {
     if (typeof window === 'undefined') return []
 
     try {
@@ -32,13 +54,18 @@ export const loadCartItems = (currentUser) => {
             ?? (!currentUser?.id
                 ? window.localStorage.getItem(LEGACY_CART_STORAGE_KEY)
                 : null)
-        return savedCart ? JSON.parse(savedCart) : []
+        const parsedCart = savedCart ? JSON.parse(savedCart) : []
+
+        return Array.isArray(parsedCart) ? parsedCart.filter(isCartItem) : []
     } catch {
         return []
     }
 }
 
-export const saveCartItems = (currentUser, items) => {
+export const saveCartItems = (
+    currentUser: CurrentUserForCart | null | undefined,
+    items: CartItem[]
+) => {
     if (typeof window === 'undefined') return
 
     try {
@@ -51,7 +78,7 @@ export const saveCartItems = (currentUser, items) => {
     }
 }
 
-const initialState = {
+const initialState: CartState = {
     showCart: false,
     items: loadCartItems(),
 }
@@ -60,7 +87,7 @@ const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        addToCart: (state, action) => {
+        addToCart: (state, action: PayloadAction<Product>) => {
             const productId = action.payload.id
             const existingItem = state.items.find(item => item.productId === productId)
 
@@ -70,13 +97,13 @@ const cartSlice = createSlice({
                 state.items.push({ productId, quantity: 1 })
             }
         },
-        removeFromCart: (state, action) => {
+        removeFromCart: (state, action: PayloadAction<Pick<Product, 'id'>>) => {
             const productId = action.payload.id
 
-            const ifIn = state.items.find(item=>item.productId === productId)
+            const ifIn = state.items.find(item => item.productId === productId)
 
             if (!ifIn) return
-            if (ifIn.quantity>1) {
+            if (ifIn.quantity > 1) {
                 ifIn.quantity -= 1
                 return
             } 
@@ -89,14 +116,14 @@ const cartSlice = createSlice({
         closeCart: (state) => {
             state.showCart = false
         },
-        replaceCart: (state, action) => {
-            state.items = Array.isArray(action.payload) ? action.payload : []
+        replaceCart: (state, action: PayloadAction<CartItem[]>) => {
+            state.items = action.payload
         },
     },
 })
 
-const selectCartState = state => state.cartReducer
-const selectProductEntities = state => state.productsReducer.entities
+const selectCartState = (state: CartRootState) => state.cartReducer
+const selectProductEntities = (state: CartRootState) => state.productsReducer.entities
 
 export const selectCartItems = createSelector(
     selectCartState,
@@ -115,7 +142,7 @@ export const selectCartItemsWithProducts = createSelector(
             ...item,
             product: productEntities[item.productId],
         }))
-        .filter(item => item.product)
+        .filter((item): item is CartItemWithProduct => Boolean(item.product))
 )
 
 export const selectCartTotal = createSelector(
@@ -128,5 +155,12 @@ export const selectCartItemCount = createSelector(
     items => items.reduce((total, item) => total + item.quantity, 0)
 )
 
-export const {addToCart, removeFromCart, toggleShowCart, closeCart, replaceCart} = cartSlice.actions
+export const {
+    addToCart,
+    removeFromCart,
+    toggleShowCart,
+    closeCart,
+    replaceCart,
+} = cartSlice.actions
+
 export default cartSlice.reducer

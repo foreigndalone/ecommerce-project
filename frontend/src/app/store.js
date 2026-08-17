@@ -11,7 +11,7 @@ import cartReducer, {
     replaceCart,
     saveCartItems,
     selectCartItems,
-} from '../features/cart/cartSlice.js'
+} from '../features/cart/cartSlice'
 
 const authListenerMiddleware = createAuthListenerMiddleware()
 
