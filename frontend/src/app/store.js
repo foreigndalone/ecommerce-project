@@ -4,7 +4,7 @@ import usersReducer, {
     createAuthListenerMiddleware,
     selectCurrentUser,
 } from '../features/users/usersSlice.js'
-import favoritesReducer from '../features/favorites/favoritesSlice.js'
+import favoritesReducer from '../features/favorites/favoritesSlice'
 import cartReducer, {
     getCartStorageKey,
     loadCartItems,

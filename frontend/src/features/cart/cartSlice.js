@@ -1,5 +1,21 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 
+// import type { Product } from '../products'
+
+// export interface CartItem {
+//   productId: string
+//   quantity: number
+// }
+
+// export interface CartState {
+//   showCart: boolean
+//   items: CartItem[]
+// }
+
+// export interface CartItemWithProduct extends CartItem {
+//   product: Product
+// }
+
 const GUEST_CART_STORAGE_KEY = 'ecommerce.cart.guest'
 const LEGACY_CART_STORAGE_KEY = 'ecommerce.cart.items'
 
