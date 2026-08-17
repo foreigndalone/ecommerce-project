@@ -1,11 +1,13 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { selectCartItemsWithProducts } from './cartSlice'
-
-import { removeFromCart } from './cartSlice'
+import type { AppDispatch, RootState } from '../../app/store'
+import {
+    removeFromCart,
+    selectCartItemsWithProducts,
+} from './cartSlice'
 
 const CartList = () => {
-    const dispatch = useDispatch()
-    const cartList = useSelector(selectCartItemsWithProducts)
+    const dispatch = useDispatch<AppDispatch>()
+    const cartList = useSelector((state: RootState) => selectCartItemsWithProducts(state))
 
 
     return (

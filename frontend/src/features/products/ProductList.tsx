@@ -1,5 +1,6 @@
-import {useEffect} from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import type { AppDispatch, RootState } from '../../app/store'
 import {
   fetchProductsThunk,
   selectFilteredProducts,
@@ -11,16 +12,16 @@ import ProductItem from './ProductItem'
 
 const ProductList = () => {
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<AppDispatch>()
 
     useEffect(()=>{
         dispatch(fetchProductsThunk())
     }, [dispatch])
 
-    const products = useSelector(selectFilteredProducts)
-    const hasError = useSelector(selectHasProductsError)
-    const errorMessage = useSelector(selectProductsErrorMessage)
-    const isLoading = useSelector(selectIsLoadingProducts)
+    const products = useSelector((state: RootState) => selectFilteredProducts(state))
+    const hasError = useSelector((state: RootState) => selectHasProductsError(state))
+    const errorMessage = useSelector((state: RootState) => selectProductsErrorMessage(state))
+    const isLoading = useSelector((state: RootState) => selectIsLoadingProducts(state))
 
     if (isLoading) {
     return (

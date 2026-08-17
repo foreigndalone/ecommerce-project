@@ -1,26 +1,30 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { useDispatch } from 'react-redux'
 import gsap from 'gsap'
 import { ShoppingBag, Check } from 'lucide-react'
 
-
+import type { AppDispatch } from '../../app/store'
+import type { Product } from '../../types/products'
 import { addToCart } from './cartSlice'
 
+interface AddToCartBTNProps {
+  product: Product
+}
 
-const AddToCartBTN = ({ product }) => {
-    const dispatch = useDispatch()
+const AddToCartBTN = ({ product }: AddToCartBTNProps) => {
+    const dispatch = useDispatch<AppDispatch>()
 
   const [isAdded, setIsAdded] = useState(false)
 
-  const buttonRef = useRef(null)
-  const defaultContentRef = useRef(null)
-  const addedContentRef = useRef(null)
-  const checkIconRef = useRef(null)
-  const resetTimeoutRef = useRef(null)
+  const buttonRef = useRef<HTMLButtonElement | null>(null)
+  const defaultContentRef = useRef<HTMLDivElement | null>(null)
+  const addedContentRef = useRef<HTMLDivElement | null>(null)
+  const checkIconRef = useRef<HTMLSpanElement | null>(null)
+  const resetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const isOutOfStock = product?.stock <= 0
 
-  const handleClick = (event) => {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
 
     if (!product?.id || isAdded || isOutOfStock) return

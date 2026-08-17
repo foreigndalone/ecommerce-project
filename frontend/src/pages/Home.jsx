@@ -1,5 +1,5 @@
-import ProductFilter from '../features/products/ProductFilter.jsx'
-import ProductList from '../features/products/ProductList.jsx'
+import ProductFilter from '../features/products/ProductFilter'
+import ProductList from '../features/products/ProductList'
 
 export default function Home() {
   return (

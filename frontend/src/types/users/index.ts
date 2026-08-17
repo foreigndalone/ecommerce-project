@@ -33,3 +33,23 @@ export interface UpdateUserPayload {
   name?: string
   email?: string
 }
+
+export type SessionStatus = 'idle' | 'loading' | 'authenticated' | 'unauthenticated' | 'failed'
+
+export type ProfileUpdateStatus = 'idle' | 'loading' | 'succeeded' | 'failed'
+
+export interface AuthErrorPayload {
+  status: number | null
+  message: string
+}
+
+export interface UsersState {
+  currentUser: User | null
+  token: string | null
+  sessionStatus: SessionStatus
+  isLoading: boolean
+  hasError: boolean
+  errorMessage: string | null
+  profileUpdateStatus: ProfileUpdateStatus
+  profileUpdateError: string | null
+}

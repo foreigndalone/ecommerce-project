@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom'
 import LikeBTN from '../../components/LikeBTN'
 import AddToCartBTN from '../cart/AddToCartBTN'
+import type { Product } from '../../types/products'
 
-const ProductItem = ({product}) => {
+interface ProductItemProps {
+  product: Product
+}
+
+const ProductItem = ({product}: ProductItemProps) => {
     const {title, images, description, price, rating, stock, category} = product
     const image = images?.[0]
 

@@ -1,5 +1,7 @@
+import type { ChangeEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ChevronDown, Search } from 'lucide-react'
+import type { AppDispatch, RootState } from '../../app/store'
 import {
     selectBrands,
     selectCategories,
@@ -19,22 +21,22 @@ const SelectArrow = () => (
 
 const ProductFilter = () => {
     
-    const dispatch = useDispatch()
-    const searchQuery = useSelector(selectSearchQuery)
-    const selectedCategory = useSelector(selectSelectedCategory)
-    const selectedBrand = useSelector(selectSelectedBrand)
-    const categories = useSelector(selectCategories)
-    const brands = useSelector(selectBrands)
+    const dispatch = useDispatch<AppDispatch>()
+    const searchQuery = useSelector((state: RootState) => selectSearchQuery(state))
+    const selectedCategory = useSelector((state: RootState) => selectSelectedCategory(state))
+    const selectedBrand = useSelector((state: RootState) => selectSelectedBrand(state))
+    const categories = useSelector((state: RootState) => selectCategories(state))
+    const brands = useSelector((state: RootState) => selectBrands(state))
 
-    const handleSearchChange = (event) => {
+    const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
         dispatch(setSearchQuery(event.target.value))
     }
 
-    const handleCategoryChange = (event) => {
+    const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
         dispatch(setSelectedCategory(event.target.value))
     }
 
-    const handleBrandChange = (event) => {
+    const handleBrandChange = (event: ChangeEvent<HTMLSelectElement>) => {
         dispatch(setSelectedBrand(event.target.value))
     }
 

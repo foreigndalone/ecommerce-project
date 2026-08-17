@@ -6,7 +6,7 @@ import {
   clearAuthError,
   login,
   sendUserData,
-} from '../features/users/usersSlice.js'
+} from '../features/users/usersSlice'
 
 export default function Auth() {
   const [searchParams, setSearchParams] = useSearchParams()

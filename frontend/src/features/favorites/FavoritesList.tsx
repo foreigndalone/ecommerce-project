@@ -2,11 +2,16 @@ import { Heart, Trash2 } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import type { AppDispatch, RootState } from '../../app/store'
 import { removeFavorite, selectAllFavorites } from './favoritesSlice'
 
-const FavoritesList = ({ onNavigate }) => {
-  const dispatch = useDispatch()
-  const favorites = useSelector(selectAllFavorites)
+interface FavoritesListProps {
+  onNavigate?: () => void
+}
+
+const FavoritesList = ({ onNavigate }: FavoritesListProps) => {
+  const dispatch = useDispatch<AppDispatch>()
+  const favorites = useSelector((state: RootState) => selectAllFavorites(state))
 
   if (favorites.length === 0) {
     return (

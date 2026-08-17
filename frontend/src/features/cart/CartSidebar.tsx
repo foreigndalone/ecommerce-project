@@ -2,19 +2,20 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { X } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
+import type { AppDispatch, RootState } from '../../app/store'
 import CartList from './CartList'
 import { closeCart, selectCartItemCount, selectCartTotal, selectShowCart } from './cartSlice'
 
 const CartSidebar = () => {
-  const dispatch = useDispatch()
-  const showCart = useSelector(selectShowCart)
-  const itemCount = useSelector(selectCartItemCount)
-  const total = useSelector(selectCartTotal)
+  const dispatch = useDispatch<AppDispatch>()
+  const showCart = useSelector((state: RootState) => selectShowCart(state))
+  const itemCount = useSelector((state: RootState) => selectCartItemCount(state))
+  const total = useSelector((state: RootState) => selectCartTotal(state))
 
   useEffect(() => {
     if (!showCart) return
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         dispatch(closeCart())
       }

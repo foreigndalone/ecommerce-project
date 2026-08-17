@@ -4,9 +4,9 @@ import { Heart, LogOut, ShoppingBag, UserRound, X } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '../app/store'
 import { selectCartItemCount, toggleShowCart } from '../features/cart/cartSlice'
-import FavoritesList from '../features/favorites/FavoritesList.jsx'
+import FavoritesList from '../features/favorites/FavoritesList'
 import { selectFavoritesCount } from '../features/favorites/favoritesSlice'
-import { logout, selectCurrentUser, selectIsAuthenticated } from '../features/users/usersSlice.js'
+import { logout, selectCurrentUser, selectIsAuthenticated } from '../features/users/usersSlice'
 
 export default function Navbar() {
   const dispatch = useDispatch<AppDispatch>()

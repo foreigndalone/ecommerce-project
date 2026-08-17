@@ -5,7 +5,7 @@ import productsReducer from '../features/products/productsSlice'
 import usersReducer, {
     createAuthListenerMiddleware,
     selectCurrentUser,
-} from '../features/users/usersSlice.js'
+} from '../features/users/usersSlice'
 
 import favoritesReducer from '../features/favorites/favoritesSlice'
 

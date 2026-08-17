@@ -1,9 +1,23 @@
-// path: src/features/users/usersSlice.js
+// path: src/features/users/usersSlice.ts
 import {
     createAsyncThunk,
     createListenerMiddleware,
     createSlice,
 } from '@reduxjs/toolkit'
+
+import type {
+    AuthErrorPayload,
+    AuthResponse,
+    LoginPayload,
+    RegisterUserPayload,
+    UpdateUserPayload,
+    User,
+    UsersState,
+} from '../../types/users'
+
+interface UsersRootState {
+    usersReducer: UsersState
+}
 
 const USERS_API_ORIGIN = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000').replace(/\/$/, '')
 const USERS_API_URL = `${USERS_API_ORIGIN}/api/users/signUp`
@@ -11,7 +25,7 @@ const LOGIN_API_URL = `${USERS_API_ORIGIN}/api/users/login`
 const CURRENT_USER_API_URL = `${USERS_API_ORIGIN}/api/users/me`
 const AUTH_TOKEN_STORAGE_KEY = 'ecommerce.auth.token'
 
-export const loadAuthToken = () => {
+export const loadAuthToken = (): string | null => {
     if (typeof window === 'undefined') return null
 
     try {
@@ -21,7 +35,7 @@ export const loadAuthToken = () => {
     }
 }
 
-export const saveAuthToken = (token) => {
+export const saveAuthToken = (token: string): void => {
     if (typeof window === 'undefined' || typeof token !== 'string' || !token) return
 
     try {
@@ -31,7 +45,7 @@ export const saveAuthToken = (token) => {
     }
 }
 
-export const removeAuthToken = () => {
+export const removeAuthToken = (): void => {
     if (typeof window === 'undefined') return
 
     try {
@@ -41,12 +55,12 @@ export const removeAuthToken = () => {
     }
 }
 
-const getErrorMessage = async (response, fallbackMessage) => {
+const getErrorMessage = async (response: Response, fallbackMessage: string): Promise<string> => {
     const errorData = await response.json().catch(() => null)
     return errorData?.message || `${fallbackMessage}: ${response.status}`
 }
 
-export const sendUserData = createAsyncThunk(
+export const sendUserData = createAsyncThunk<User, RegisterUserPayload | undefined, { rejectValue: string }>(
     'users/sendUserData',
     async ({ name, email, password, createdAt } = {}, { rejectWithValue }) => {
         try {
@@ -79,14 +93,14 @@ export const sendUserData = createAsyncThunk(
                 return rejectWithValue(await getErrorMessage(response, 'Failed to register user'))
             }
 
-            return response.json()
+            return response.json() as Promise<User>
         } catch (error) {
-            return rejectWithValue(error.message || 'Failed to register user')
+            return rejectWithValue(error instanceof Error ? error.message : 'Failed to register user')
         }
     }
 )
 
-export const login = createAsyncThunk(
+export const login = createAsyncThunk<AuthResponse, LoginPayload | undefined, { rejectValue: string }>(
     'users/signIn',
     async ({ email, password } = {}, { rejectWithValue }) => {
         try {
@@ -111,14 +125,14 @@ export const login = createAsyncThunk(
                 return rejectWithValue(await getErrorMessage(response, 'Failed to log in'))
             }
 
-            return response.json()
+            return response.json() as Promise<AuthResponse>
         } catch (error) {
-            return rejectWithValue(error.message || 'Failed to log in')
+            return rejectWithValue(error instanceof Error ? error.message : 'Failed to log in')
         }
     }
 )
 
-export const fetchCurrentUser = createAsyncThunk(
+export const fetchCurrentUser = createAsyncThunk<User, void, { state: UsersRootState; rejectValue: AuthErrorPayload }>(
     'users/fetchCurrentUser',
     async (_, { getState, rejectWithValue }) => {
         const token = getState().usersReducer.token
@@ -145,17 +159,17 @@ export const fetchCurrentUser = createAsyncThunk(
                 })
             }
 
-            return response.json()
+            return response.json() as Promise<User>
         } catch (error) {
             return rejectWithValue({
                 status: null,
-                message: error.message || 'Failed to get current user',
+                message: error instanceof Error ? error.message : 'Failed to get current user',
             })
         }
     }
 )
 
-export const updateCurrentUser = createAsyncThunk(
+export const updateCurrentUser = createAsyncThunk<User, UpdateUserPayload | undefined, { state: UsersRootState; rejectValue: string }>(
     'users/updateCurrentUser',
     async ({ name, email } = {}, { getState, rejectWithValue }) => {
         const token = getState().usersReducer.token
@@ -178,16 +192,16 @@ export const updateCurrentUser = createAsyncThunk(
                 return rejectWithValue(await getErrorMessage(response, 'Failed to update user'))
             }
 
-            return response.json()
+            return response.json() as Promise<User>
         } catch (error) {
-            return rejectWithValue(error.message || 'Failed to update user')
+            return rejectWithValue(error instanceof Error ? error.message : 'Failed to update user')
         }
     }
 )
 
 const storedToken = loadAuthToken()
 
-const initialState = {
+const initialState: UsersState = {
     currentUser: null, //{ id, email, name, role, avatar }
     token: storedToken,
     sessionStatus: storedToken ? 'idle' : 'unauthenticated',
@@ -330,18 +344,18 @@ export const createAuthListenerMiddleware = () => {
     return listenerMiddleware
 }
 
-const selectUsersState = (state) => state.usersReducer
+const selectUsersState = (state: UsersRootState) => state.usersReducer
 
-export const selectCurrentUser = (state) => selectUsersState(state).currentUser
-export const selectAuthToken = (state) => selectUsersState(state).token
-export const selectSessionStatus = (state) => selectUsersState(state).sessionStatus
-export const selectProfileUpdateStatus = (state) =>
+export const selectCurrentUser = (state: UsersRootState) => selectUsersState(state).currentUser
+export const selectAuthToken = (state: UsersRootState) => selectUsersState(state).token
+export const selectSessionStatus = (state: UsersRootState) => selectUsersState(state).sessionStatus
+export const selectProfileUpdateStatus = (state: UsersRootState) =>
     selectUsersState(state).profileUpdateStatus ?? 'idle'
-export const selectProfileUpdateError = (state) =>
+export const selectProfileUpdateError = (state: UsersRootState) =>
     selectUsersState(state).profileUpdateError
-export const selectIsSessionLoading = (state) =>
+export const selectIsSessionLoading = (state: UsersRootState) =>
     selectSessionStatus(state) === 'loading'
-export const selectIsAuthenticated = (state) => Boolean(
+export const selectIsAuthenticated = (state: UsersRootState) => Boolean(
     selectUsersState(state).currentUser && selectUsersState(state).token
 )
 
