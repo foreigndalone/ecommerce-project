@@ -1,30 +1,38 @@
-import { createSelector, createSlice } from '@reduxjs/toolkit'
+// path: src/features/favorites/favoritesSlice.ts
+import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-const initialState = {
+import type { Product } from '../../types/products'
+
+export interface FavoritesState {
+    items: Product[]
+    status: 'idle' | 'loading' | 'succeeded' | 'failed'
+    error: string | null
+}
+
+interface FavoritesRootState {
+    favoritesReducer: FavoritesState
+}
+
+const initialState: FavoritesState = {
     items: [],
     status: 'idle',
     error: null,
 }
 
-const getFavoriteId = (favorite) =>
-    favorite && typeof favorite === 'object' ? favorite.id : favorite
+const getFavoriteId = (favorite: Product) => favorite.id
 
-const isSameFavorite = (favorite, candidate) => {
+const isSameFavorite = (favorite: Product, candidate: Product) => {
     const favoriteId = getFavoriteId(favorite)
     const candidateId = getFavoriteId(candidate)
 
-    if (favoriteId !== undefined && candidateId !== undefined) {
-        return favoriteId === candidateId
-    }
-
-    return favorite === candidate
+    return favoriteId === candidateId
 }
 
 const favoritesSlice = createSlice({
     name: 'favorites',
     initialState,
     reducers: {
-        addFavorite: (state, action) => {
+        addFavorite: (state, action: PayloadAction<Product>) => {
             const exists = state.items.some((item) =>
                 isSameFavorite(item, action.payload)
             )
@@ -33,12 +41,12 @@ const favoritesSlice = createSlice({
                 state.items.push(action.payload)
             }
         },
-        removeFavorite: (state, action) => {
+        removeFavorite: (state, action: PayloadAction<Product>) => {
             state.items = state.items.filter((item) =>
                 !isSameFavorite(item, action.payload)
             )
         },
-        toggleFavorite: (state, action) => {
+        toggleFavorite: (state, action: PayloadAction<Product>) => {
             const existingIndex = state.items.findIndex((item) =>
                 isSameFavorite(item, action.payload)
             )
@@ -55,11 +63,12 @@ const favoritesSlice = createSlice({
     },
 })
 
-const selectFavoritesState = (state) => state.favoritesReducer
+const selectFavoritesState = (state: FavoritesRootState) => state.favoritesReducer
 
-export const selectAllFavorites = (state) => selectFavoritesState(state).items
+export const selectAllFavorites = (state: FavoritesRootState) =>
+    selectFavoritesState(state).items
 
-export const selectIsFavorite = (state, favorite) =>
+export const selectIsFavorite = (state: FavoritesRootState, favorite: Product) =>
     selectAllFavorites(state).some((item) => isSameFavorite(item, favorite))
 
 export const selectFavoritesCount = createSelector(

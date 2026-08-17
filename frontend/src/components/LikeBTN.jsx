@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
     selectIsFavorite,
     toggleFavorite,
-} from '../features/favorites/favoritesSlice.js'
+} from '../features/favorites/favoritesSlice'
 
 export default function LikeBTN({ product }) {
     const dispatch = useDispatch()

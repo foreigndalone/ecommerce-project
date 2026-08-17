@@ -16,28 +16,29 @@ const createTestStore = () => configureStore({
 })
 
 describe('favoritesSlice', () => {
-    it('adds favorites without duplicates and supports objects and IDs', () => {
+    it('adds product favorites without duplicates', () => {
         const store = createTestStore()
-        const product = { id: 1, title: 'Phone' }
+        const product = { id: 'product-1', title: 'Phone' }
 
         store.dispatch(addFavorite(product))
-        store.dispatch(addFavorite({ id: 1, title: 'Updated Phone' }))
-        store.dispatch(addFavorite(2))
+        store.dispatch(addFavorite({ id: 'product-1', title: 'Updated Phone' }))
 
-        expect(selectAllFavorites(store.getState())).toEqual([product, 2])
-        expect(selectFavoritesCount(store.getState())).toBe(2)
-        expect(selectIsFavorite(store.getState(), 1)).toBe(true)
-        expect(selectIsFavorite(store.getState(), { id: 2 })).toBe(true)
+        expect(selectAllFavorites(store.getState())).toEqual([product])
+        expect(selectFavoritesCount(store.getState())).toBe(1)
+        expect(selectIsFavorite(store.getState(), product)).toBe(true)
     })
 
     it('toggles, removes, and clears favorites', () => {
         const store = createTestStore()
+        const phone = { id: 'product-1', title: 'Phone' }
+        const laptop = { id: 'product-2', title: 'Laptop' }
+        const headphones = { id: 'product-3', title: 'Headphones' }
 
-        store.dispatch(toggleFavorite({ id: 1, title: 'Phone' }))
-        store.dispatch(toggleFavorite(1))
-        store.dispatch(addFavorite({ id: 2, title: 'Laptop' }))
-        store.dispatch(removeFavorite(2))
-        store.dispatch(addFavorite(3))
+        store.dispatch(toggleFavorite(phone))
+        store.dispatch(toggleFavorite(phone))
+        store.dispatch(addFavorite(laptop))
+        store.dispatch(removeFavorite(laptop))
+        store.dispatch(addFavorite(headphones))
         store.dispatch(clearFavorites())
 
         expect(selectAllFavorites(store.getState())).toEqual([])
