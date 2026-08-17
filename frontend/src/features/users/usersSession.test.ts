@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { createTestStore } from '../../test/renderWithProviders'
+import type { UsersState } from '../../types/users'
 import {
     fetchCurrentUser,
     login,
@@ -10,25 +11,30 @@ import {
 const AUTH_TOKEN_STORAGE_KEY = 'ecommerce.auth.token'
 
 const createLocalStorageMock = () => {
-    const values = new Map()
+    const values = new Map<string, string>()
 
     return {
         clear: () => values.clear(),
-        getItem: (key) => values.get(key) ?? null,
-        removeItem: (key) => values.delete(key),
-        setItem: (key, value) => values.set(key, String(value)),
+        getItem: (key: string) => values.get(key) ?? null,
+        removeItem: (key: string) => values.delete(key),
+        setItem: (key: string, value: string) => values.set(key, String(value)),
     }
 }
 
-const createUsersState = (overrides = {}) => ({
-    currentUser: null,
-    token: null,
-    sessionStatus: 'unauthenticated',
-    isLoading: false,
-    hasError: false,
-    errorMessage: null,
-    ...overrides,
-})
+const createUsersState = (overrides: Partial<UsersState> = {}): UsersState => {
+    const baseState: UsersState = {
+        currentUser: null,
+        token: null,
+        sessionStatus: 'unauthenticated',
+        isLoading: false,
+        hasError: false,
+        errorMessage: null,
+        profileUpdateStatus: 'idle',
+        profileUpdateError: null,
+    }
+
+    return { ...baseState, ...overrides }
+}
 
 describe('users session restoration', () => {
     beforeEach(() => {
@@ -142,7 +148,7 @@ describe('users session restoration', () => {
             token: 'signed-token',
         }
 
-        store.dispatch(login.fulfilled(payload, 'login-request', {}))
+        store.dispatch(login.fulfilled(payload, 'login-request', undefined))
 
         expect(window.localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)).toBe('signed-token')
 

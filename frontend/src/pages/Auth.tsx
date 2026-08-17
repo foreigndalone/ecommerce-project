@@ -2,33 +2,47 @@ import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowRight, LockKeyhole, Mail, ShoppingBag, User } from 'lucide-react'
+
+import type { AppDispatch, RootState } from '../app/store'
+
 import {
   clearAuthError,
   login,
   sendUserData,
 } from '../features/users/usersSlice'
 
+interface AuthFormValues {
+  name?: string
+  email: string
+  password: string
+}
+
+interface AuthLocationState {
+  from?: string
+}
+
 export default function Auth() {
   const [searchParams, setSearchParams] = useSearchParams()
   const mode = searchParams.get('mode') === 'login' ? 'login' : 'signup'
-  const dispatch = useDispatch()
-  const { isLoading, hasError, errorMessage } = useSelector((state) => state.usersReducer)
+  const dispatch = useDispatch<AppDispatch>()
+  const { isLoading, hasError, errorMessage } = useSelector((state: RootState) => state.usersReducer)
 
   const navigate = useNavigate()
   const location = useLocation()
+  const locationState = location.state as AuthLocationState | null
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset
-  } = useForm()
+  } = useForm<AuthFormValues>()
 
-  const onSubmit = async (formData) => {
+  const onSubmit = async (formData: AuthFormValues) => {
     try {
       if (mode === 'signup') {
         await dispatch(sendUserData({
-          name: formData.name,
+          name: formData.name ?? '',
           email: formData.email,
           password: formData.password,
           createdAt: new Date().toISOString(),
@@ -45,13 +59,13 @@ export default function Auth() {
         })).unwrap()
       }
 
-      navigate(location.state?.from || '/', { replace: true })
+      navigate(locationState?.from || '/', { replace: true })
     } catch {
       // The rejected thunk stores the server message in the users slice.
     }
   }
 
-  const toggleMode = (newMode) => {
+  const toggleMode = (newMode: 'login' | 'signup') => {
     setSearchParams({ mode: newMode }, { replace: true })
     dispatch(clearAuthError())
     reset()

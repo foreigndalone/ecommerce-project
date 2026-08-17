@@ -14,6 +14,9 @@ import {
   UserRound,
 } from 'lucide-react'
 
+import type { FormEvent } from 'react'
+import type { AppDispatch } from '../app/store'
+
 import {
   selectCurrentUser,
   selectProfileUpdateError,
@@ -22,7 +25,7 @@ import {
 } from '../features/users/usersSlice'
 
 const UserAccount = () => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<AppDispatch>()
     const user = useSelector(selectCurrentUser)
     const updateStatus = useSelector(selectProfileUpdateStatus)
     const updateError = useSelector(selectProfileUpdateError)
@@ -63,7 +66,7 @@ const UserAccount = () => {
       setIsEditing(false)
     }
 
-    const handleProfileSubmit = async (event) => {
+    const handleProfileSubmit = async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault()
 
       try {

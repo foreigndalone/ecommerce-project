@@ -62,8 +62,9 @@ const getErrorMessage = async (response: Response, fallbackMessage: string): Pro
 
 export const sendUserData = createAsyncThunk<User, RegisterUserPayload | undefined, { rejectValue: string }>(
     'users/sendUserData',
-    async ({ name, email, password, createdAt } = {}, { rejectWithValue }) => {
+    async (payload, { rejectWithValue }) => {
         try {
+            const { name, email, password, createdAt } = payload ?? {}
             const trimmedName = typeof name === 'string' ? name.trim() : ''
             const trimmedEmail = typeof email === 'string' ? email.trim() : ''
 
@@ -71,7 +72,7 @@ export const sendUserData = createAsyncThunk<User, RegisterUserPayload | undefin
                 return rejectWithValue('Name, email, and password are required')
             }
 
-            const parsedCreatedAt = new Date(createdAt)
+            const parsedCreatedAt = createdAt ? new Date(createdAt) : new Date(Number.NaN)
             const normalizedCreatedAt = Number.isNaN(parsedCreatedAt.getTime())
                 ? new Date().toISOString()
                 : parsedCreatedAt.toISOString()
@@ -102,8 +103,9 @@ export const sendUserData = createAsyncThunk<User, RegisterUserPayload | undefin
 
 export const login = createAsyncThunk<AuthResponse, LoginPayload | undefined, { rejectValue: string }>(
     'users/signIn',
-    async ({ email, password } = {}, { rejectWithValue }) => {
+    async (payload, { rejectWithValue }) => {
         try {
+            const { email, password } = payload ?? {}
             const trimmedEmail = typeof email === 'string' ? email.trim() : ''
 
             if (!trimmedEmail || !password) {

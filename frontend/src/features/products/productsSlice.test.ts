@@ -10,6 +10,7 @@ import productsReducer, {
   setSelectedBrand,
   setSelectedCategory,
 } from './productsSlice'
+import { createTestProduct } from '../../test/productFactory'
 
 const createTestStore = () => configureStore({
   reducer: {
@@ -18,20 +19,20 @@ const createTestStore = () => configureStore({
 })
 
 const products = [
-  {
+  createTestProduct({
     id: '64f000000000000000000001',
     title: 'Essence Mascara',
     brand: 'Essence',
     category: 'beauty',
     tags: ['makeup', 'eyes'],
-  },
-  {
+  }),
+  createTestProduct({
     id: '64f000000000000000000002',
     title: 'Apple MacBook',
     brand: 'Apple',
     category: 'laptops',
     tags: ['computer'],
-  },
+  }),
 ]
 
 afterEach(() => {
@@ -43,7 +44,11 @@ describe('productsSlice filtering', () => {
   it('filters by search text, category, brand, and tags without duplicating filtered state', () => {
     const store = createTestStore()
 
-    store.dispatch(fetchProductsThunk.fulfilled({ products }, 'products-loaded'))
+    store.dispatch(fetchProductsThunk.fulfilled(
+      { products, total: 2, limit: 30, skip: 0 },
+      'products-loaded',
+      undefined
+    ))
     store.dispatch(setSearchQuery('makeup'))
     store.dispatch(setSelectedCategory('beauty'))
     store.dispatch(setSelectedBrand('Essence'))

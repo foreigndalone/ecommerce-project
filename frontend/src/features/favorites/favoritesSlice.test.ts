@@ -10,6 +10,7 @@ import favoritesReducer, {
     selectIsFavorite,
     toggleFavorite,
 } from './favoritesSlice'
+import { createTestProduct } from '../../test/productFactory'
 
 const createTestStore = () => configureStore({
     reducer: { favoritesReducer },
@@ -18,10 +19,10 @@ const createTestStore = () => configureStore({
 describe('favoritesSlice', () => {
     it('adds product favorites without duplicates', () => {
         const store = createTestStore()
-        const product = { id: 'product-1', title: 'Phone' }
+        const product = createTestProduct({ id: 'product-1', title: 'Phone' })
 
         store.dispatch(addFavorite(product))
-        store.dispatch(addFavorite({ id: 'product-1', title: 'Updated Phone' }))
+        store.dispatch(addFavorite(createTestProduct({ id: 'product-1', title: 'Updated Phone' })))
 
         expect(selectAllFavorites(store.getState())).toEqual([product])
         expect(selectFavoritesCount(store.getState())).toBe(1)
@@ -30,9 +31,9 @@ describe('favoritesSlice', () => {
 
     it('toggles, removes, and clears favorites', () => {
         const store = createTestStore()
-        const phone = { id: 'product-1', title: 'Phone' }
-        const laptop = { id: 'product-2', title: 'Laptop' }
-        const headphones = { id: 'product-3', title: 'Headphones' }
+        const phone = createTestProduct({ id: 'product-1', title: 'Phone' })
+        const laptop = createTestProduct({ id: 'product-2', title: 'Laptop' })
+        const headphones = createTestProduct({ id: 'product-3', title: 'Headphones' })
 
         store.dispatch(toggleFavorite(phone))
         store.dispatch(toggleFavorite(phone))

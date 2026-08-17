@@ -1,8 +1,8 @@
 import { screen } from '@testing-library/react'
 import { Route, Routes } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import Product from './Product'
-import { renderWithProviders } from '../test/renderWithProviders'
+import Product from '../Product'
+import { renderWithProviders } from '../../test/renderWithProviders'
 
 describe('Product page', () => {
   afterEach(() => {

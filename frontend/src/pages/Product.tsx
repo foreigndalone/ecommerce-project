@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import AddToCartBTN from '../features/cart/AddToCartBTN'
+import type { AppDispatch, RootState } from '../app/store'
 
 import {
     fetchProductByIdThunk,
@@ -12,17 +13,22 @@ import {
     selectProductsErrorMessage,
 } from '../features/products/productsSlice'
 
-const Product = () => {
-    const { id } = useParams()
-    const dispatch = useDispatch()
-    const productId = id?.trim()
+interface ImageSelection {
+    productId: string | null
+    index: number
+}
 
-    const product = useSelector(state => selectProductById(state, productId))
-    const isLoading = useSelector(state => selectIsProductLoadingById(state, productId))
+const Product = () => {
+    const { id } = useParams<{ id: string }>()
+    const dispatch = useDispatch<AppDispatch>()
+    const productId = id?.trim() ?? ''
+
+    const product = useSelector((state: RootState) => selectProductById(state, productId))
+    const isLoading = useSelector((state: RootState) => selectIsProductLoadingById(state, productId))
     const hasError = useSelector(selectHasProductsError)
     const errorMessage = useSelector(selectProductsErrorMessage)
 
-    const [imageSelection, setImageSelection] = useState({ productId: null, index: 0 })
+    const [imageSelection, setImageSelection] = useState<ImageSelection>({ productId: null, index: 0 })
 
     const images = product?.images?.length ? product.images : product?.thumbnail ? [product.thumbnail] : []
     const selectedImage = imageSelection.productId === productId ? imageSelection.index : 0

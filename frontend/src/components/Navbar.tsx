@@ -86,7 +86,7 @@ export default function Navbar() {
             <>
               <Link to="/account" aria-label="Open account" className="account-link">
                 <UserRound className="h-4 w-4" aria-hidden="true" />
-                <span className="account-copy"><span>{currentUser.name}</span><small>{userPoints} pts</small></span>
+                <span className="account-copy"><span>{currentUser?.name}</span><small>{userPoints} pts</small></span>
               </Link>
               <button type="button" onClick={handleLogout} aria-label="Log Out" className="grid h-11 w-11 place-items-center border-0 bg-transparent text-[#58677a] hover:text-[#1557ff]">
                 <LogOut className="h-5 w-5" aria-hidden="true" />

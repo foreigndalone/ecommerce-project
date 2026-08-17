@@ -1,7 +1,10 @@
 import './App.css'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {Routes, Route} from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
+
+import type { AppDispatch } from './app/store'
+
 import Home from './pages/Home'
 import Auth from './pages/Auth'
 import CheckOut from './pages/CheckOut'
@@ -17,7 +20,7 @@ import {
 import UserAccount from './pages/UserAccount'
 
 function App() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const token = useSelector(selectAuthToken)
   const currentUser = useSelector(selectCurrentUser)
   const sessionStatus = useSelector(selectSessionStatus)
@@ -47,18 +50,18 @@ function App() {
 
   return (
     <>
-    <header>
-      <Navbar/>
-    </header>
-    <main className="app-main">
-      <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/auth' element={<Auth/>}/>
-        <Route path='/checkout' element={<CheckOut/>}/>
-        <Route path='/product/:id' element={<Product/>} />
-        <Route path='/account' element={<UserAccount/>} />
-      </Routes>
-    </main>
+      <header>
+        <Navbar />
+      </header>
+      <main className="app-main">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/checkout" element={<CheckOut />} />
+          <Route path="/product/:id" element={<Product />} />
+          <Route path="/account" element={<UserAccount />} />
+        </Routes>
+      </main>
       <CartSidebar />
     </>
   )

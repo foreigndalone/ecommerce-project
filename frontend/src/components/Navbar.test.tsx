@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 
 import Navbar from './Navbar'
-import { renderWithProviders } from '../test/renderWithProviders.jsx'
+import { renderWithProviders } from '../test/renderWithProviders'
 
 describe('Navbar authentication controls', () => {
   it('opens a favorites window and removes a saved product', async () => {

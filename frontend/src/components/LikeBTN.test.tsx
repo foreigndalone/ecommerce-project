@@ -4,12 +4,13 @@ import { describe, expect, it } from 'vitest'
 
 import LikeBTN from './LikeBTN'
 import { selectFavoritesCount, selectIsFavorite } from '../features/favorites/favoritesSlice'
+import { createTestProduct } from '../test/productFactory'
 import { renderWithProviders } from '../test/renderWithProviders'
 
 describe('LikeBTN', () => {
     it('toggles a product in favorites', async () => {
         const user = userEvent.setup()
-        const product = { id: 1, title: 'Phone' }
+        const product = createTestProduct({ id: 'product-1', title: 'Phone' })
         const { store } = renderWithProviders(<LikeBTN product={product} />)
 
         const addButton = screen.getByRole('button', { name: 'Add to favorites' })

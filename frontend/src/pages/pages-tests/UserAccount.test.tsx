@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { Route, Routes } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import UserAccount from './UserAccount.jsx'
-import { renderWithProviders } from '../test/renderWithProviders.jsx'
+import UserAccount from '../UserAccount'
+import { renderWithProviders } from '../../test/renderWithProviders'
 
 describe('UserAccount', () => {
   afterEach(() => {
@@ -27,12 +27,14 @@ describe('UserAccount', () => {
     renderWithProviders(<UserAccount />, {
       preloadedState: {
         usersReducer: {
-          currentUser: { id: 1, name: 'Elvis', email: 'elvis@example.com' },
+          currentUser: { id: '1', name: 'Elvis', email: 'elvis@example.com' },
           token: 'signed-token',
           sessionStatus: 'authenticated',
           isLoading: false,
           hasError: false,
           errorMessage: null,
+          profileUpdateStatus: 'idle',
+          profileUpdateError: null,
         },
       },
     })
@@ -44,20 +46,22 @@ describe('UserAccount', () => {
 
   it('updates the profile through the authenticated API and Redux', async () => {
     const user = userEvent.setup()
-    const updatedUser = { id: 1, name: 'Elvis B', email: 'new@example.com' }
+    const updatedUser = { id: '1', name: 'Elvis B', email: 'new@example.com' }
     const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
       ok: true,
       json: async () => updatedUser,
-    })
+    } as Response)
     const { store } = renderWithProviders(<UserAccount />, {
       preloadedState: {
         usersReducer: {
-          currentUser: { id: 1, name: 'Elvis', email: 'elvis@example.com' },
+          currentUser: { id: '1', name: 'Elvis', email: 'elvis@example.com' },
           token: 'signed-token',
           sessionStatus: 'authenticated',
           isLoading: false,
           hasError: false,
           errorMessage: null,
+          profileUpdateStatus: 'idle',
+          profileUpdateError: null,
         },
       },
     })

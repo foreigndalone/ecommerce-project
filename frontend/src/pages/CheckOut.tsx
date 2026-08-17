@@ -3,9 +3,10 @@ import CartList from '../features/cart/CartList'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectCartItems, selectCartTotal } from '../features/cart/cartSlice'
 import { fetchProductsThunk } from '../features/products/productsSlice'
+import type { AppDispatch } from '../app/store'
 
 export default function CheckOut() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const cart = useSelector(selectCartItems)
   const finalPrice = useSelector(selectCartTotal)
 

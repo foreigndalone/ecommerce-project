@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { Route, Routes } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import Auth from './Auth.jsx'
-import { renderWithProviders } from '../test/renderWithProviders.jsx'
+import Auth from '../Auth'
+import { renderWithProviders } from '../../test/renderWithProviders'
 
 const renderAuth = (route = '/auth') => renderWithProviders(
   <Routes>
@@ -63,7 +63,7 @@ describe('Auth page', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2)
     expect(fetchMock.mock.calls[0][0]).toContain('/api/users/signUp')
     expect(fetchMock.mock.calls[1][0]).toContain('/api/users/login')
-    expect(store.getState().usersReducer.currentUser.name).toBe('Test User')
+    expect(store.getState().usersReducer.currentUser?.name).toBe('Test User')
     expect(store.getState().usersReducer.token).toBe('signed-token')
   })
 
@@ -106,7 +106,7 @@ describe('Auth page', () => {
     await user.click(screen.getByRole('button', { name: 'Login' }))
 
     expect(await screen.findByRole('heading', { name: 'Home page' })).toBeInTheDocument()
-    expect(store.getState().usersReducer.currentUser.name).toBe('Test User')
+    expect(store.getState().usersReducer.currentUser?.name).toBe('Test User')
     expect(store.getState().usersReducer.token).toBe('signed-token')
   })
 })

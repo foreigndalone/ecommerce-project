@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import CheckOut from './CheckOut'
-import { renderWithProviders } from '../test/renderWithProviders'
+import CheckOut from '../CheckOut'
+import { renderWithProviders } from '../../test/renderWithProviders'
 
 describe('CheckOut page', () => {
   afterEach(() => {
