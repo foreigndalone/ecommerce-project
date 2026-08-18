@@ -36,6 +36,7 @@ export const toPublicUser = (user) => ({
     id: user._id.toString(),
     name: user.name,
     email: user.normalizedEmail,
+    role: user.role || 'user',
     createdAt: user.createdAt,
 })
 
@@ -52,6 +53,7 @@ export const createJwtToken = (user) => {
     const payload = Buffer.from(JSON.stringify({
         sub: user.id,
         email: user.email,
+        role: user.role || 'user',
         iat: issuedAt,
         exp: issuedAt + JWT_TTL_SECONDS,
     })).toString('base64url')

@@ -3,6 +3,7 @@ import cors from 'cors'
 
 import { connectDB } from './config/db.js'
 
+import adminRouter from './routes/adminRouter.js'
 import productsRouter from './routes/productsRouter.js'
 import usersRouter from './routes/usersRouter.js'
 import { ensureProductsIndexes } from './models/productsModel.js'
@@ -16,6 +17,7 @@ app.use(express.json())
 
 app.use(cors({ origin: FRONTEND_ORIGIN }))
 
+app.use('/api/admin', adminRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/users', usersRouter)
 
