@@ -7,6 +7,7 @@ import { selectCartItemCount, toggleShowCart } from '../features/cart/cartSlice'
 import FavoritesList from '../features/favorites/FavoritesList'
 import { selectFavoritesCount } from '../features/favorites/favoritesSlice'
 import { logout, selectCurrentUser, selectIsAuthenticated } from '../features/users/usersSlice'
+import IsAdmin from './IsAdmin'
 
 export default function Navbar() {
   const dispatch = useDispatch<AppDispatch>()
@@ -53,7 +54,17 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-1 sm:gap-3">
-          <a href="/#catalog" className="hidden min-h-11 items-center px-3 text-sm font-bold text-[#10233f] no-underline hover:text-[#1557ff] sm:flex">Shop</a>
+          <IsAdmin
+            fallback={(
+              <Link to="/#catalog" className="hidden min-h-11 items-center px-3 text-sm font-bold text-[#10233f] no-underline hover:text-[#1557ff] sm:flex">
+                Shop
+              </Link>
+            )}
+          >
+            <Link to="/admin/products" className="hidden min-h-11 items-center px-3 text-sm font-bold text-[#10233f] no-underline hover:text-[#1557ff] sm:flex">
+              Shop
+            </Link>
+          </IsAdmin>
           <div className="favorites-menu" ref={favoritesMenuRef}>
             <button
               type="button"

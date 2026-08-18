@@ -73,4 +73,52 @@ describe('Navbar authentication controls', () => {
     expect(screen.getByRole('link', { name: 'Login' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Log Out' })).not.toBeInTheDocument()
   })
+
+  it('points the Shop link to admin products for admin users', () => {
+    renderWithProviders(<Navbar />, {
+      preloadedState: {
+        usersReducer: {
+          currentUser: {
+            id: 'admin-id',
+            name: 'Admin User',
+            email: 'admin@example.com',
+            role: 'admin',
+          },
+          token: 'signed-token',
+          sessionStatus: 'authenticated',
+          isLoading: false,
+          hasError: false,
+          errorMessage: null,
+          profileUpdateStatus: 'idle',
+          profileUpdateError: null,
+        },
+      },
+    })
+
+    expect(screen.getByRole('link', { name: 'Shop' })).toHaveAttribute('href', '/admin/products')
+  })
+
+  it('keeps the Shop link pointed to the catalog for regular users', () => {
+    renderWithProviders(<Navbar />, {
+      preloadedState: {
+        usersReducer: {
+          currentUser: {
+            id: 'user-id',
+            name: 'Regular User',
+            email: 'user@example.com',
+            role: 'user',
+          },
+          token: 'signed-token',
+          sessionStatus: 'authenticated',
+          isLoading: false,
+          hasError: false,
+          errorMessage: null,
+          profileUpdateStatus: 'idle',
+          profileUpdateError: null,
+        },
+      },
+    })
+
+    expect(screen.getByRole('link', { name: 'Shop' })).toHaveAttribute('href', '/#catalog')
+  })
 })
