@@ -28,6 +28,7 @@ export const createUserModel = async (userData) => {
     const user = {
         name: userData.name,
         normalizedEmail: normalizeEmail(userData.email),
+        role: 'user',
         passwordHash: await hashPassword(userData.password),
         createdAt: userData.createdAt ?? new Date(),
         updatedAt: new Date(),

@@ -17,6 +17,11 @@ import type {
     ProductsQuery,
     ProductsResponse,
 } from '../../types/products'
+import {
+    archiveAdminProductThunk,
+    createAdminProductThunk,
+    updateAdminProductThunk,
+} from '../adminProducts/adminProductsSlice'
 
 interface ProductsStateExtra {
     searchQuery: string
@@ -267,6 +272,25 @@ const productsSlice = createSlice({
                 state.hasError = false
                 state.errorMessage = null
                 productsAdapter.upsertOne(state, action.payload)
+            })
+            .addCase(createAdminProductThunk.fulfilled, (state, action) => {
+                if (action.payload.status === 'active') {
+                    productsAdapter.upsertOne(state, action.payload)
+                    return
+                }
+
+                productsAdapter.removeOne(state, action.payload.id)
+            })
+            .addCase(updateAdminProductThunk.fulfilled, (state, action) => {
+                if (action.payload.status === 'active') {
+                    productsAdapter.upsertOne(state, action.payload)
+                    return
+                }
+
+                productsAdapter.removeOne(state, action.payload.id)
+            })
+            .addCase(archiveAdminProductThunk.fulfilled, (state, action) => {
+                productsAdapter.removeOne(state, action.payload.id)
             })
     },
 })

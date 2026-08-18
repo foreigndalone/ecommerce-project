@@ -4,6 +4,7 @@ import test from 'node:test'
 import { createJwtToken } from '../utils/usersAuth.js'
 import {
     requireAuth,
+    requireRole,
     verifyJwtToken,
 } from '../src/middlewares/auth.middleware.js'
 import { validateRequest } from '../src/middlewares/validate.middleware.js'
@@ -55,6 +56,27 @@ test('requireAuth attaches the verified payload to the request', () => {
     } finally {
         process.env.JWT_SECRET = previousSecret
     }
+})
+
+test('requireRole allows matching roles', () => {
+    const req = { user: { role: 'admin' } }
+    const res = createResponse()
+    let nextCalled = false
+
+    requireRole('admin')(req, res, () => { nextCalled = true })
+
+    assert.equal(nextCalled, true)
+    assert.equal(res.statusCode, null)
+})
+
+test('requireRole rejects non-matching roles', () => {
+    const req = { user: { role: 'user' } }
+    const res = createResponse()
+
+    requireRole('admin')(req, res, () => assert.fail('next should not be called'))
+
+    assert.equal(res.statusCode, 403)
+    assert.deepEqual(res.body, { message: 'Forbidden' })
 })
 
 test('requireAuth rejects a missing token', () => {

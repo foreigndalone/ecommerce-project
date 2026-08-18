@@ -355,7 +355,8 @@ test('toPublicUser omits password and internal fields', () => {
         updatedAt: new Date('2026-01-01T00:00:00.000Z'),
     })
 
-    assert.deepEqual(Object.keys(user), ['id', 'name', 'email', 'createdAt'])
+    assert.deepEqual(Object.keys(user), ['id', 'name', 'email', 'role', 'createdAt'])
+    assert.equal(user.role, 'user')
     assert.equal(user.passwordHash, undefined)
     assert.equal(user.updatedAt, undefined)
 })
@@ -373,6 +374,7 @@ test('createJwtToken creates a signed one-hour HS256 token', () => {
     assert.deepEqual(decodedHeader, { alg: 'HS256', typ: 'JWT' })
     assert.equal(decodedPayload.sub, 'user-id')
     assert.equal(decodedPayload.email, 'user@example.com')
+    assert.equal(decodedPayload.role, 'user')
     assert.equal(decodedPayload.exp - decodedPayload.iat, 3600)
     assert.equal(signature, expectedSignature)
 })
