@@ -10,6 +10,7 @@ import Auth from './pages/Auth'
 import CheckOut from './pages/CheckOut'
 import Navbar from './components/Navbar'
 import Product from './pages/Product'
+import AdminProducts from './pages/AdminProducts'
 import CartSidebar from './features/cart/CartSidebar'
 import {
   fetchCurrentUser,
@@ -60,6 +61,7 @@ function App() {
           <Route path="/checkout" element={<CheckOut />} />
           <Route path="/product/:id" element={<Product />} />
           <Route path="/account" element={<UserAccount />} />
+          <Route path="/admin/products" element={<AdminProducts />} />
         </Routes>
       </main>
       <CartSidebar />

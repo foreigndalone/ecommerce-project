@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom'
 import type { ReactElement } from 'react'
 
 import cartReducer from '../features/cart/cartSlice'
+import adminProductsReducer from '../features/adminProducts/adminProductsSlice'
 import favoritesReducer from '../features/favorites/favoritesSlice'
 import productsReducer from '../features/products/productsSlice'
 import usersReducer, { createAuthListenerMiddleware } from '../features/users/usersSlice'
@@ -15,6 +16,7 @@ export const createTestStore = (preloadedState?: object) => {
   return configureStore({
     reducer: {
       productsReducer,
+      adminProductsReducer,
       usersReducer,
       cartReducer,
       favoritesReducer,

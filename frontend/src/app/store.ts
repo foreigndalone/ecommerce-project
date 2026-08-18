@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import productsReducer from '../features/products/productsSlice'
+import adminProductsReducer from '../features/adminProducts/adminProductsSlice'
 
 import usersReducer, {
     createAuthListenerMiddleware,
@@ -22,6 +23,7 @@ const authListenerMiddleware = createAuthListenerMiddleware()
 const store = configureStore({
     reducer: {
         productsReducer,
+        adminProductsReducer,
         usersReducer,
         cartReducer,
         favoritesReducer,
