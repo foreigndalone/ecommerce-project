@@ -355,9 +355,7 @@ export const selectFilteredProducts = createSelector(
             const title = product?.title?.toLowerCase() || ''
             const category = product?.category?.toLowerCase() || ''
             const brand = product?.brand?.toLowerCase() || ''
-            const tags = Array.isArray(product?.tags)
-                ? product.tags.join(' ').toLowerCase()
-                : product?.tags?.toLowerCase() || ''
+            const tags = product.tags.join(' ').toLowerCase()
 
             const matchesSearch = !query
                 || title.includes(query)

@@ -1,0 +1,52 @@
+import { configureStore } from '@reduxjs/toolkit'
+
+import productsReducer from '../features/products/productsSlice'
+
+import usersReducer, {
+    createAuthListenerMiddleware,
+    selectCurrentUser,
+} from '../features/users/usersSlice'
+
+import favoritesReducer from '../features/favorites/favoritesSlice'
+
+import cartReducer, {
+    getCartStorageKey,
+    loadCartItems,
+    replaceCart,
+    saveCartItems,
+    selectCartItems,
+} from '../features/cart/cartSlice'
+
+const authListenerMiddleware = createAuthListenerMiddleware()
+
+const store = configureStore({
+    reducer: {
+        productsReducer,
+        usersReducer,
+        cartReducer,
+        favoritesReducer,
+    },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().prepend(authListenerMiddleware.middleware),
+})
+
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
+
+let activeCartKey = getCartStorageKey(selectCurrentUser(store.getState()))
+
+store.subscribe(() => {
+    const state = store.getState()
+    const currentUser = selectCurrentUser(state)
+    const nextCartKey = getCartStorageKey(currentUser)
+
+    if (nextCartKey !== activeCartKey) {
+        activeCartKey = nextCartKey
+        store.dispatch(replaceCart(loadCartItems(currentUser)))
+        return
+    }
+
+    saveCartItems(currentUser, selectCartItems(state))
+})
+
+export default store
